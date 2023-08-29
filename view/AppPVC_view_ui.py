@@ -1,10 +1,9 @@
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from controller.App_PVC_controller import AppPVCController as controller
 
 
-class Ui_MainWindow(object):
+
+class PVC_view(object):
     def setupUi(self, Project1):
         Project1.setObjectName("Project1")
         Project1.resize(944, 518)
@@ -43,7 +42,8 @@ class Ui_MainWindow(object):
         self.menuImage_Processing = QtWidgets.QMenu(self.menubar)
         self.menuImage_Processing.setObjectName("menuImage_Processing")
         self.menuAritmetical_Operation = QtWidgets.QMenu(self.menubar)
-        self.menuAritmetical_Operation.setObjectName("menuAritmetical_Operation")
+        self.menuAritmetical_Operation.setObjectName(
+            "menuAritmetical_Operation")
         self.menuFilter = QtWidgets.QMenu(self.menubar)
         self.menuFilter.setObjectName("menuFilter")
         self.menuEdge_Detection = QtWidgets.QMenu(self.menuFilter)
@@ -68,16 +68,16 @@ class Ui_MainWindow(object):
         Project1.setStatusBar(self.statusbar)
         self.actionOpen = QtWidgets.QAction(Project1)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionOpen.triggered.connect(controller.onOpen)
+        # self.actionOpen.triggered.connect(self.onOpen)
         self.action_save = QtWidgets.QAction(Project1)
         self.action_save.setObjectName("actionSave")
-        self.action_save.triggered.connect(controller.onSave)
+        # self.action_save.triggered.connect(controller.onSave)
         self.actionSave_As = QtWidgets.QAction(Project1)
         self.actionSave_As.setObjectName("actionSave_As")
-        self.actionSave_As.triggered.connect(controller.onSaveAs)
+        # self.actionSave_As.triggered.connect(controller.onSaveAs)
         self.actionExit = QtWidgets.QAction(Project1)
         self.actionExit.setObjectName("actionExit")
-        self.actionExit.triggered.connect(controller.onExit)
+        # self.actionExit.triggered.connect(controller.onExit)
         self.actionInput = QtWidgets.QAction(Project1)
         self.actionInput.setObjectName("actionInput")
         self.actionOutput = QtWidgets.QAction(Project1)
@@ -85,7 +85,8 @@ class Ui_MainWindow(object):
         self.actionInput_Output = QtWidgets.QAction(Project1)
         self.actionInput_Output.setObjectName("actionInput_Output")
         self.actionBrightness_Contrast = QtWidgets.QAction(Project1)
-        self.actionBrightness_Contrast.setObjectName("actionBrightness_Contrast")
+        self.actionBrightness_Contrast.setObjectName(
+            "actionBrightness_Contrast")
         self.actionInvers = QtWidgets.QAction(Project1)
         self.actionInvers.setObjectName("actionInvers")
         self.actionLog_Brightness = QtWidgets.QAction(Project1)
@@ -129,7 +130,8 @@ class Ui_MainWindow(object):
         self.action7_bit = QtWidgets.QAction(Project1)
         self.action7_bit.setObjectName("action7_bit")
         self.actionHistogram_Equalization = QtWidgets.QAction(Project1)
-        self.actionHistogram_Equalization.setObjectName("actionHistogram_Equalization")
+        self.actionHistogram_Equalization.setObjectName(
+            "actionHistogram_Equalization")
         self.actionFuzzy_HE_RGB = QtWidgets.QAction(Project1)
         self.actionFuzzy_HE_RGB.setObjectName("actionFuzzy_HE_RGB")
         self.actionFuzzy_Grayscale = QtWidgets.QAction(Project1)
@@ -263,15 +265,21 @@ class Ui_MainWindow(object):
         self.menuHistogram.setTitle(_translate("Project1", "Histogram"))
         self.menuColors.setTitle(_translate("Project1", "Colors"))
         self.menuRGB.setTitle(_translate("Project1", "RGB"))
-        self.menuRGB_to_Graysclae.setTitle(_translate("Project1", "RGB to Graysclae"))
+        self.menuRGB_to_Graysclae.setTitle(
+            _translate("Project1", "RGB to Graysclae"))
         self.menuBrightness.setTitle(_translate("Project1", "Brightness"))
         self.menuBit_Depth.setTitle(_translate("Project1", "Bit Depth"))
-        self.menuImage_Processing.setTitle(_translate("Project1", "Image Processing"))
-        self.menuAritmetical_Operation.setTitle(_translate("Project1", "Aritmetical Operation"))
+        self.menuImage_Processing.setTitle(
+            _translate("Project1", "Image Processing"))
+        self.menuAritmetical_Operation.setTitle(
+            _translate("Project1", "Aritmetical Operation"))
         self.menuFilter.setTitle(_translate("Project1", "Filter"))
-        self.menuEdge_Detection.setTitle(_translate("Project1", "Edge Detection"))
-        self.menuGaussian_Blur.setTitle(_translate("Project1", "Gaussian Blur"))
-        self.menuEdge_Detection_2.setTitle(_translate("Project1", "Edge Detection"))
+        self.menuEdge_Detection.setTitle(
+            _translate("Project1", "Edge Detection"))
+        self.menuGaussian_Blur.setTitle(
+            _translate("Project1", "Gaussian Blur"))
+        self.menuEdge_Detection_2.setTitle(
+            _translate("Project1", "Edge Detection"))
         self.menuMorfologi.setTitle(_translate("Project1", "Morfologi"))
         self.menuErosion.setTitle(_translate("Project1", "Erosion"))
         self.menuDilation.setTitle(_translate("Project1", "Dilation"))
@@ -284,10 +292,13 @@ class Ui_MainWindow(object):
         self.actionInput.setText(_translate("Project1", "Input"))
         self.actionOutput.setText(_translate("Project1", "Output"))
         self.actionInput_Output.setText(_translate("Project1", "Input Output"))
-        self.actionBrightness_Contrast.setText(_translate("Project1", "Brightness - Contrast"))
+        self.actionBrightness_Contrast.setText(
+            _translate("Project1", "Brightness - Contrast"))
         self.actionInvers.setText(_translate("Project1", "Invers"))
-        self.actionLog_Brightness.setText(_translate("Project1", "Log Brightness"))
-        self.actionGamma_Correction.setText(_translate("Project1", "Gamma Correction"))
+        self.actionLog_Brightness.setText(
+            _translate("Project1", "Log Brightness"))
+        self.actionGamma_Correction.setText(
+            _translate("Project1", "Gamma Correction"))
         self.actionKuning.setText(_translate("Project1", "Kuning"))
         self.actionOrange.setText(_translate("Project1", "Orange"))
         self.actionCyan.setText(_translate("Project1", "Cyan"))
@@ -306,21 +317,33 @@ class Ui_MainWindow(object):
         self.action5_bit.setText(_translate("Project1", "5 bit"))
         self.action6_bit.setText(_translate("Project1", "6 bit"))
         self.action7_bit.setText(_translate("Project1", "7 bit"))
-        self.actionHistogram_Equalization.setText(_translate("Project1", "Histogram Equalization"))
+        self.actionHistogram_Equalization.setText(
+            _translate("Project1", "Histogram Equalization"))
         self.actionFuzzy_HE_RGB.setText(_translate("Project1", "Fuzzy HE RGB"))
-        self.actionFuzzy_Grayscale.setText(_translate("Project1", "Fuzzy Grayscale"))
+        self.actionFuzzy_Grayscale.setText(
+            _translate("Project1", "Fuzzy Grayscale"))
         self.actionIDENTITY.setText(_translate("Project1", "Identity"))
         self.actionSharpen.setText(_translate("Project1", "Sharpen"))
-        self.actionUnsharp_Masking.setText(_translate("Project1", "Unsharp Masking"))
-        self.actionAerage_Filter.setText(_translate("Project1", "Average Filter"))
-        self.actionLow_Pass_Filter.setText(_translate("Project1", "Low Pass Filter"))
-        self.actionHigh_Pass_Filter.setText(_translate("Project1", "High Pass Filter"))
-        self.actionBandstop_Filter.setText(_translate("Project1", "Bandstop Filter"))
-        self.actionEdge_Detection_1.setText(_translate("Project1", "Edge Detection 1"))
-        self.actionEdge_Detection_2.setText(_translate("Project1", "Edge Detection 2"))
-        self.actionEdge_Detection_3.setText(_translate("Project1", "Edge Detection 3"))
-        self.actionGaussian_Blur_3x3.setText(_translate("Project1", "Gaussian Blur 3x3"))
-        self.actionGaussian_Blur_5x5.setText(_translate("Project1", "Gaussian Blur 5x5"))
+        self.actionUnsharp_Masking.setText(
+            _translate("Project1", "Unsharp Masking"))
+        self.actionAerage_Filter.setText(
+            _translate("Project1", "Average Filter"))
+        self.actionLow_Pass_Filter.setText(
+            _translate("Project1", "Low Pass Filter"))
+        self.actionHigh_Pass_Filter.setText(
+            _translate("Project1", "High Pass Filter"))
+        self.actionBandstop_Filter.setText(
+            _translate("Project1", "Bandstop Filter"))
+        self.actionEdge_Detection_1.setText(
+            _translate("Project1", "Edge Detection 1"))
+        self.actionEdge_Detection_2.setText(
+            _translate("Project1", "Edge Detection 2"))
+        self.actionEdge_Detection_3.setText(
+            _translate("Project1", "Edge Detection 3"))
+        self.actionGaussian_Blur_3x3.setText(
+            _translate("Project1", "Gaussian Blur 3x3"))
+        self.actionGaussian_Blur_5x5.setText(
+            _translate("Project1", "Gaussian Blur 5x5"))
         self.actionPrewitt.setText(_translate("Project1", "Prewitt"))
         self.actionSbbel.setText(_translate("Project1", "Sobel"))
         self.actionSquare_3.setText(_translate("Project1", "Square 3"))
@@ -331,4 +354,3 @@ class Ui_MainWindow(object):
         self.actionCross_4.setText(_translate("Project1", "Cross 3"))
         self.actionSquare_9.setText(_translate("Project1", "Square 9"))
         self.actionSquare_10.setText(_translate("Project1", "Square 9"))
-
