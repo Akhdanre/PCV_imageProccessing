@@ -1,31 +1,32 @@
 import sys
-from PyQt5.QtWidgets import QFileDialog
+import platform
+from PyQt5.QtWidgets import QFileDialog, QWidget
 from pathlib import Path
-# from view.AppPVC import Ui_MainWindow
 
 
-class AppPVCController(object) :
+class AppPVCController(QWidget):
 
     def __init__(self, model):
         super().__init__()
         self.model = model
 
-
-    def onOpen(self) :
-        filename, ok = QFileDialog.getOpenFileName(
-            self,
-            "Select a File", 
-            "/home/akeon/Pictures/", 
-            "Images (*.png *.jpg)"
+    def onOpen(self):
+        file_filter = "Image File (*.jpg *.png)"
+        directory_path =Path.home() / "Pictures"
+        
+        response = QFileDialog.getOpenFileName(
+            parent=self,
+            caption="Select Image",
+            directory=str(directory_path),
+            filter=file_filter,
+            initialFilter=file_filter
         )
-        if filename:
-            path = Path(filename)
-            self.view.label.setText(path)
+        print(response[0])
 
-    def onSave(self) :
+    def onSave(self):
         print("onSave")
 
-    def onSaveAs(self): 
+    def onSaveAs(self):
         print("onSaveAs")
 
     def onExit(self):
