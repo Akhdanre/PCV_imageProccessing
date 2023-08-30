@@ -1,5 +1,7 @@
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import pyqtSlot
 
 from view.AppPVC_view_ui import PVC_view
 
@@ -16,3 +18,11 @@ class AppPVCViewMain(QMainWindow):
         self.view.action_save.triggered.connect(self.controller.onSave)
         self.view.actionSave_As.triggered.connect(self.controller.onSaveAs)
         self.view.actionExit.triggered.connect(self.controller.onExit)
+
+        self.model.image_path_changed.connect(self.on_image_change)
+
+    @pyqtSlot(str)
+    def on_image_change(self, value):
+        pixmap = QPixmap(value)
+        self.view.label.setPixmap(pixmap)
+    

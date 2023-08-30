@@ -1,11 +1,18 @@
 from PyQt5.QtCore import QObject, pyqtSignal
 
 
-class AppPVCModel(object):
-    label_value = pyqtSignal(str)
+class AppPVCModel(QObject):
+    
+    image_path_changed = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
-        self.label_value = ''
-
     
+    @property
+    def imgPath(self): 
+        return self.path
+    
+    def addImgPath(self, value):
+        self.path = value
+        self.image_path_changed.emit(value)
+
