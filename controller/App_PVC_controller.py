@@ -1,9 +1,10 @@
+import io
 import sys
 import platform
 from PyQt5.QtWidgets import QFileDialog, QWidget
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
-
+from PyQt5.QtGui import QPixmap
 
 class AppPVCController(QObject):
 
@@ -28,7 +29,7 @@ class AppPVCController(QObject):
     def onSave(self):
         print("onSave")
 
-    def onSaveAs(self):
+    def onSaveAs(self, label):
         image_path = self.model.imgPath
         if image_path:
             file_filter = "JPEG Image (*.jpg);;PNG Image (*.png)"
@@ -42,10 +43,13 @@ class AppPVCController(QObject):
             )
 
             if response:
-                
-                print("Saving the image as:", response)
+                new_path = f'{response}.PNG'
+                pixmap = QPixmap(label.size())
+                label.render(pixmap)
+                pixmap.save(new_path)
+
         else:
             print("No image path available.")
 
     def onExit(self):
-        sys.exit()
+        sys.exit()  

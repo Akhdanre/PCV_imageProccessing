@@ -1,9 +1,7 @@
-import typing
-from PyQt5 import QtWidgets
+import sys
 from controller.App_PVC_controller import AppPVCController
 from model.AppPVC_model import AppPVCModel
 from view.AppPVC_view_main import AppPVCViewMain
-import sys
 from PyQt5.QtWidgets import QApplication
 
 class App(QApplication):
