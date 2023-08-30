@@ -1,7 +1,4 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from controller.App_PVC_controller import AppPVCController as controller
-
-
 
 class PVC_view(object):
     def setupUi(self, Project1):

@@ -1,6 +1,4 @@
-import io
 import sys
-import platform
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path

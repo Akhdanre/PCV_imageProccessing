@@ -1,11 +1,7 @@
-
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot
-
-
 from view.AppPVC_view_ui import PVC_view
-
 
 class AppPVCViewMain(QMainWindow):
     def __init__(self, model, controller):
