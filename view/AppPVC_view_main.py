@@ -14,8 +14,10 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionOpen.triggered.connect(self.controller.onOpen)
         self.view.action_save.triggered.connect(self.controller.onSave)
         self.view.actionSave_As.triggered.connect(lambda: self.controller.onSaveAs(self.view.label))
+
         self.view.actionExit.triggered.connect(self.controller.onExit)
         self.view.actionAverage.triggered.connect(lambda: self.controller.onImageProces("average"))
+        self.view.actionLuminance.triggered.connect(lambda: self.controller.onImageProces("luminance"))
 
 
         self.model.image_result_changed.connect(self.on_image_result)
