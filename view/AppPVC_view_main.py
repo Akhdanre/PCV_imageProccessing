@@ -15,7 +15,10 @@ class AppPVCViewMain(QMainWindow):
         self.view.action_save.triggered.connect(self.controller.onSave)
         self.view.actionSave_As.triggered.connect(lambda: self.controller.onSaveAs(self.view.label))
         self.view.actionExit.triggered.connect(self.controller.onExit)
+        self.view.actionAverage.triggered.connect(lambda: self.controller.onImageProces("average"))
 
+
+        self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
 
     @pyqtSlot(str)
@@ -23,5 +26,13 @@ class AppPVCViewMain(QMainWindow):
         pixmap = QPixmap(value)
         self.view.label.setPixmap(pixmap)
         self.view.label.setScaledContents(True)
+
+
+    @pyqtSlot(QPixmap)
+    def on_image_result(self, value):
+        self.view.label_2.setPixmap(value)
+        self.view.label.setScaledContents(True)
+
+
 
 

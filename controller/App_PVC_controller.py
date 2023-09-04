@@ -2,7 +2,11 @@ import sys
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 
 class AppPVCController(QObject):
 
@@ -50,4 +54,37 @@ class AppPVCController(QObject):
             print("No image path available.")
 
     def onExit(self):
-        sys.exit()  
+        sys.exit()
+
+    def onImageProces(self, condition):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            gray = self.imageToGrayScale(image, condition)
+            print(sys.getsizeof(self.imageToGrayScale), "bytes")
+
+            height, width = gray.shape
+            bytes_per_line = 1 * width
+            q_img = QImage(gray.data, width, height,
+                           bytes_per_line, QImage.Format_Grayscale8)
+
+            pixmap = QPixmap.fromImage(q_img)
+
+            # Emit the pixmap to be displayed in the view
+            self.model.image_result_changed.emit(pixmap)
+
+    def imageToGrayScale(self, img, condition):
+        height, width, channels = img.shape
+        gray = np.zeros((height, width), dtype=np.uint8)
+        # gray[i, j] = np.uint8(0.2989 * img[i, j, 0] + 0.5870 * img[i, j, 1] + 0.1140 * img[i, j, 2])
+        if condition == "average":
+            for i in range(height):
+                for j in range(width):
+                    # value = (img[i, j, 0] + img[i, j, 1] + img[i, j, 2]) / 3
+                    gray[i, j] = np.uint8((img[i, j, 0] + img[i, j, 1] + img[i, j, 2]) / 3)
+        if condition == "lightness":
+            for i in range(height):
+                for j in range(width):
+                    gray[i, j] = np.uint8(
+                        (img[i, j, 0] + img[i, j, 1] + img[i, j, 2])/3)
+        return gray
