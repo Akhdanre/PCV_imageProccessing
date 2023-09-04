@@ -18,7 +18,7 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionExit.triggered.connect(self.controller.onExit)
         self.view.actionAverage.triggered.connect(lambda: self.controller.onImageProces("average"))
         self.view.actionLuminance.triggered.connect(lambda: self.controller.onImageProces("luminance"))
-
+        self.view.actionInvers.triggered.connect(lambda: self.controller.onImageProces("invers"))
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)

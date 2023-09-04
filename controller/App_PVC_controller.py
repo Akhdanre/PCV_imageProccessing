@@ -78,7 +78,8 @@ class AppPVCController(QObject):
         if condition == "average":
             for i in range(height):
                 for j in range(width):
-                    gray[i, j] = np.uint8((0.299 * img[i, j, 0] + 0.587 * img[i, j, 1] + 0.144 * img[i, j, 2]) / 3)
+                    gray[i, j] = np.uint8(
+                        (0.299 * img[i, j, 0] + 0.587 * img[i, j, 1] + 0.144 * img[i, j, 2]) / 3)
         if condition == "lightness":
             for i in range(height):
                 for j in range(width):
@@ -87,10 +88,19 @@ class AppPVCController(QObject):
         if condition == "luminance":
             for i in range(height):
                 for j in range(width):
-                    value =  (0.299 * img[i, j, 0]) + (0.587 * img[i, j, 1]) + (0.144 * img[i, j, 2])
+                    value = (0.299 * img[i, j, 0]) + (0.587 *
+                                                      img[i, j, 1]) + (0.144 * img[i, j, 2])
                     if value > 255:
-                         print("more than 255 -> value ", value)
-                         gray[i, j] = np.uint8(255)
-                    else: 
+                        gray[i, j] = np.uint8(255)
+                    else:
                         gray[i, j] = np.uint8(value)
+        if condition == "invers":
+            for i in range(height):
+                for j in range(width):
+                    value = (0.299 * img[i, j, 0]) + (0.587 *
+                                                      img[i, j, 1]) + (0.144 * img[i, j, 2])
+                    if value > 255:
+                        gray[i, j] = 0
+                    else:
+                        gray[i, j] = 255 - value
         return gray
