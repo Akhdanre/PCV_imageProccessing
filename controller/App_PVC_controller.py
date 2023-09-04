@@ -45,7 +45,7 @@ class AppPVCController(QObject):
             )
 
             if response:
-                new_path = f'{response}.PNG'
+                new_path = f'{response}.png'
                 pixmap = QPixmap(label.size())
                 label.render(pixmap)
                 pixmap.save(new_path)
