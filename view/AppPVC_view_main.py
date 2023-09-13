@@ -18,7 +18,10 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionExit.triggered.connect(self.controller.onExit)
         self.view.actionAverage.triggered.connect(lambda: self.controller.onImageProces("average"))
         self.view.actionLuminance.triggered.connect(lambda: self.controller.onImageProces("luminance"))
+        self.view.actionLightness.triggered.connect(lambda: self.controller.onImageProces("Lightness"))
         self.view.actionInvers.triggered.connect(lambda: self.controller.onImageProces("invers"))
+
+        self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
@@ -27,13 +30,13 @@ class AppPVCViewMain(QMainWindow):
     def on_image_change(self, value):
         pixmap = QPixmap(value)
         self.view.label.setPixmap(pixmap)
-        self.view.label.setScaledContents(True)
+        # self.view.label.setScaledContents(True)
 
 
     @pyqtSlot(QPixmap)
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
-        self.view.label_2.setScaledContents(True)
+        # self.view.label_2.setScaledContents(True)
 
 
 

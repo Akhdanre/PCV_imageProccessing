@@ -56,6 +56,34 @@ class AppPVCController(QObject):
     def onExit(self):
         sys.exit()
 
+
+    def imageHistogram(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+
+            gray = np.zeros((height, width), dtype=np.uint8)
+            for i in range(height):
+                for j in range(width):
+                    value = (0.299 * image[i, j, 0] + 0.587 * image[i, j, 1] + 0.144 * image[i, j, 2])
+                    gray[i, j] = round(value)
+
+            histogram = np.histogram(gray, bins=256, range=(0, 256))[0]
+
+            plt.bar(np.arange(256), histogram, width=1.0, color='gray')
+            plt.title("Histogram Gambar")
+            plt.xlabel("Nilai Piksel")
+            plt.ylabel("Frekuensi")
+            plt.show()
+
+    def identify_axes(ax_dict, fontsize=48):
+        kw = dict(ha="center", va="center",
+        fontsize=fontsize, color="darkgrey")
+        for k, ax in ax_dict.items():
+            ax.text(0.5, 0.5, k,
+        transform=ax.transAxes, **kw)
+
     def onImageProces(self, condition):
         image_path = self.model.imgPath
         if image_path:
@@ -74,7 +102,6 @@ class AppPVCController(QObject):
     def imageToGrayScale(self, img, condition):
         height, width, channels = img.shape
         gray = np.zeros((height, width), dtype=np.uint8)
-        # gray[i, j] = np.uint8(0.2989 * img[i, j, 0] + 0.5870 * img[i, j, 1] + 0.1140 * img[i, j, 2])
         if condition == "average":
             for i in range(height):
                 for j in range(width):
