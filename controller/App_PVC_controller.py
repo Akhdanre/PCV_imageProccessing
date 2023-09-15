@@ -63,18 +63,48 @@ class AppPVCController(QObject):
             image = mpimg.imread(image_path)
             height, width, channels = image.shape
 
+            # Mengonversi gambar ke dalam citra grayscale
             gray = np.zeros((height, width), dtype=np.uint8)
             for i in range(height):
                 for j in range(width):
                     value = (0.299 * image[i, j, 0] + 0.587 * image[i, j, 1] + 0.144 * image[i, j, 2])
                     gray[i, j] = round(value)
 
-            histogram = np.histogram(gray, bins=256, range=(0, 256))[0]
+            # Menghitung histogram citra grayscale
+            histogram_gray = np.histogram(gray, bins=256, range=(0, 256))[0]
 
-            plt.bar(np.arange(256), histogram, width=1.0, color='gray')
-            plt.title("Histogram Gambar")
+            # Menghitung histogram untuk setiap saluran warna RGB
+            histogram_red = np.histogram(image[:,:,0], bins=256, range=(0, 256))[0]
+            histogram_green = np.histogram(image[:,:,1], bins=256, range=(0, 256))[0]
+            histogram_blue = np.histogram(image[:,:,2], bins=256, range=(0, 256))[0]
+
+            # Menampilkan histogram dalam satu gambar
+            plt.figure(figsize=(10, 5))
+            plt.subplot(2, 2, 1)
+            plt.bar(np.arange(256), histogram_gray, width=1.0, color='gray')
+            plt.title("Histogram Grayscale")
             plt.xlabel("Nilai Piksel")
             plt.ylabel("Frekuensi")
+
+            plt.subplot(2, 2, 2)
+            plt.bar(np.arange(256), histogram_red, width=1.0, color='red')
+            plt.title("Histogram Merah (R)")
+            plt.xlabel("Nilai Piksel")
+            plt.ylabel("Frekuensi")
+
+            plt.subplot(2, 2, 3)
+            plt.bar(np.arange(256), histogram_green, width=1.0, color='green')
+            plt.title("Histogram Hijau (G)")
+            plt.xlabel("Nilai Piksel")
+            plt.ylabel("Frekuensi")
+
+            plt.subplot(2, 2, 4)
+            plt.bar(np.arange(256), histogram_blue, width=1.0, color='blue')
+            plt.title("Histogram Biru (B)")
+            plt.xlabel("Nilai Piksel")
+            plt.ylabel("Frekuensi")
+
+            plt.tight_layout()
             plt.show()
 
     def identify_axes(ax_dict, fontsize=48):
