@@ -4,7 +4,7 @@ from PyQt5.QtCore import pyqtSlot
 from view.AppPVC_view_ui import PVC_view
 
 class AppPVCViewMain(QMainWindow):
-    def __init__(self, model, controller):
+    def __init__(self, model, controller):  
         super().__init__()
         self.model = model
         self.controller = controller
@@ -18,9 +18,9 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionExit.triggered.connect(self.controller.onExit)
         self.view.actionAverage.triggered.connect(lambda: self.controller.onImageProces("average"))
         self.view.actionLuminance.triggered.connect(lambda: self.controller.onImageProces("luminance"))
-        self.view.actionLightness.triggered.connect(lambda: self.controller.onImageProces("Lightness"))
+        self.view.actionLightness.triggered.connect(lambda: self.controller.onImageProces("lightness"))
         self.view.actionInvers.triggered.connect(lambda: self.controller.onImageProces("invers"))
-
+    
         self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)
 
         self.model.image_result_changed.connect(self.on_image_result)

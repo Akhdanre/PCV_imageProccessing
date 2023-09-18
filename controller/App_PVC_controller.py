@@ -86,7 +86,8 @@ class AppPVCController(QObject):
             # eq_img = Image.fromarray(eq_img_array, mode='L')
 
             # Konversi gambar PIL ke QImage dengan mode warna yang sesuai
-            eq_qimage = QImage(eq_img_array.tobytes(), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
+            eq_qimage = QImage(eq_img_array.tobytes(
+            ), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
 
             # Konversi QImage ke QPixmap
             pixmap = QPixmap.fromImage(eq_qimage)
@@ -152,7 +153,7 @@ class AppPVCController(QObject):
             for i in range(height):
                 for j in range(width):
                     gray[i, j] = np.uint8(
-                        (img[i, j, 0] + img[i, j, 1] + img[i, j, 2])/3)
+                        (0.299 * img[i, j, 0] + 0.587 * img[i, j, 1] + 0.144 * img[i, j, 2]) / 3)
         if condition == "luminance":
             for i in range(height):
                 for j in range(width):
