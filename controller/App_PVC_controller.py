@@ -57,52 +57,6 @@ class AppPVCController(QObject):
     def onExit(self):
         sys.exit()
 
-    # def imageHistogram(self):
-    #     image_path = self.model.imgPath
-    #     if image_path:
-    #         image = mpimg.imread(image_path)
-    #         height, width, channels = image.shape
-
-    #         gray = np.zeros((height, width), dtype=np.uint8)
-    #         for i in range(height):
-    #             for j in range(width):
-    #                 value = (0.299 * image[i, j, 0] + 0.587 * image[i, j, 1] + 0.144 * image[i, j, 2])
-    #                 gray[i, j] = round(value)
-
-    #         histogram_gray = np.histogram(gray, bins=256, range=(0, 256))[0]
-
-    #         histogram_red = np.histogram(image[:,:,0], bins=256, range=(0, 256))[0]
-    #         histogram_green = np.histogram(image[:,:,1], bins=256, range=(0, 256))[0]
-    #         histogram_blue = np.histogram(image[:,:,2], bins=256, range=(0, 256))[0]
-
-    #         plt.figure(figsize=(10, 5))
-    #         plt.subplot(2, 2, 1)
-    #         plt.bar(np.arange(256), histogram_gray, width=1.0, color='gray')
-    #         plt.title("Histogram Grayscale")
-    #         plt.xlabel("Nilai Piksel")
-    #         plt.ylabel("Frekuensi")
-
-    #         plt.subplot(2, 2, 2)
-    #         plt.bar(np.arange(256), histogram_red, width=1.0, color='red')
-    #         plt.title("Histogram Merah (R)")
-    #         plt.xlabel("Nilai Piksel")
-    #         plt.ylabel("Frekuensi")
-
-    #         plt.subplot(2, 2, 3)
-    #         plt.bar(np.arange(256), histogram_green, width=1.0, color='green')
-    #         plt.title("Histogram Hijau (G)")
-    #         plt.xlabel("Nilai Piksel")
-    #         plt.ylabel("Frekuensi")
-
-    #         plt.subplot(2, 2, 4)
-    #         plt.bar(np.arange(256), histogram_blue, width=1.0, color='blue')
-    #         plt.title("Histogram Biru (B)")
-    #         plt.xlabel("Nilai Piksel")
-    #         plt.ylabel("Frekuensi")
-
-    #         plt.tight_layout()
-    #         plt.show()
-
     def imageHistogram(self):
         image_path = self.model.imgPath
         if image_path:
@@ -129,7 +83,7 @@ class AppPVCController(QObject):
 
             # Penyesuaian gambar array pixel ke gambar penuh
             eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
-            eq_img = Image.fromarray(eq_img_array, mode='L')
+            # eq_img = Image.fromarray(eq_img_array, mode='L')
 
             # Konversi gambar PIL ke QImage dengan mode warna yang sesuai
             eq_qimage = QImage(eq_img_array.tobytes(), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
