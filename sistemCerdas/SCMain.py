@@ -1,4 +1,3 @@
-import random
 import pyfiglet
 import time
 import sys
@@ -6,18 +5,16 @@ from rich.console import Console
 from rich.table import Table
 from rich.live import Live
 
-# Constants
 TEXT_SPEED = 0.1
 REFRESH_RATE = 1
 
 console = Console()
 
 
-def print_slow(text, colorTxt = "white"):
+def print_slow(text, colorTxt="white"):
     """Print text slowly, one character at a time."""
     for letter in text:
         console.print(letter, style=colorTxt, end="")
-        # sys.stdout.flush()
         time.sleep(TEXT_SPEED)
 
 
@@ -30,7 +27,6 @@ def get_user_input(prompt):
 
 
 def main():
-    # Print title
     title = pyfiglet.figlet_format("Sistem Cerdas")
     print(title)
 
@@ -67,6 +63,29 @@ def main():
         ["G20", "Sulit membaca huruf berukuran kecil"]
     ]
 
+    dataKeputusanPakar = {
+        "G01": {"P01": 0.25,  "P02": 0, "P03": 0, "P04": 0.25},
+        "G02": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0.25},
+        "G03": {"P01": 0.25,  "P02": 0.25, "P03": 0.25, "P04": 0.25},
+        "G04": {"P01": 0.25,  "P02": 0, "P03": 0, "P04": 0},
+        "G05": {"P01": 0.25,  "P02": 0, "P03": 0, "P04": 0},
+        "G06": {"P01": 0.25,  "P02": 0, "P03": 0, "P04": 0},
+        "G07": {"P01": 0,  "P02": 0.25, "P03": 0, "P04": 0},
+        "G08": {"P01": 0,  "P02": 0.25, "P03": 0, "P04": 0},
+        "G09": {"P01": 0,  "P02": 0.25, "P03": 0, "P04": 0},
+        "G10": {"P01": 0,  "P02": 0.25, "P03": 0, "P04": 0},
+        "G11": {"P01": 0,  "P02": 0.25, "P03": 0, "P04": 0},
+        "G12": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G13": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G14": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G15": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G16": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G17": {"P01": 0,  "P02": 0, "P03": 0, "P04": 0.25},
+        "G18": {"P01": 0,  "P02": 0, "P03": 0.25, "P04": 0},
+        "G19": {"P01": 0,  "P02": 0, "P03": 0, "P04": 0.25},
+        "G20": {"P01": 0,  "P02": 0, "P03": 0, "P04": 0.25},
+    }
+
     with Live(table, refresh_per_second=REFRESH_RATE):
         for row in list_gejala:
             time.sleep(0.2)
@@ -78,8 +97,12 @@ def main():
     print_slow(
         "pisahkan dengan tanda - pada kode, contoh G01-G02-G11 \n")
     value = get_user_input("kode : ")
-    print_slow(value)
-
+    value = value.split("-")
+    for k in range(4):
+        for i in value:
+            print(i)
+       
+            
 
 if __name__ == "__main__":
     main()

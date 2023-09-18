@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QImage
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from PIL import Image
 
 
 class AppPVCController(QObject):
@@ -56,63 +57,119 @@ class AppPVCController(QObject):
     def onExit(self):
         sys.exit()
 
+    # def imageHistogram(self):
+    #     image_path = self.model.imgPath
+    #     if image_path:
+    #         image = mpimg.imread(image_path)
+    #         height, width, channels = image.shape
+
+    #         gray = np.zeros((height, width), dtype=np.uint8)
+    #         for i in range(height):
+    #             for j in range(width):
+    #                 value = (0.299 * image[i, j, 0] + 0.587 * image[i, j, 1] + 0.144 * image[i, j, 2])
+    #                 gray[i, j] = round(value)
+
+    #         histogram_gray = np.histogram(gray, bins=256, range=(0, 256))[0]
+
+    #         histogram_red = np.histogram(image[:,:,0], bins=256, range=(0, 256))[0]
+    #         histogram_green = np.histogram(image[:,:,1], bins=256, range=(0, 256))[0]
+    #         histogram_blue = np.histogram(image[:,:,2], bins=256, range=(0, 256))[0]
+
+    #         plt.figure(figsize=(10, 5))
+    #         plt.subplot(2, 2, 1)
+    #         plt.bar(np.arange(256), histogram_gray, width=1.0, color='gray')
+    #         plt.title("Histogram Grayscale")
+    #         plt.xlabel("Nilai Piksel")
+    #         plt.ylabel("Frekuensi")
+
+    #         plt.subplot(2, 2, 2)
+    #         plt.bar(np.arange(256), histogram_red, width=1.0, color='red')
+    #         plt.title("Histogram Merah (R)")
+    #         plt.xlabel("Nilai Piksel")
+    #         plt.ylabel("Frekuensi")
+
+    #         plt.subplot(2, 2, 3)
+    #         plt.bar(np.arange(256), histogram_green, width=1.0, color='green')
+    #         plt.title("Histogram Hijau (G)")
+    #         plt.xlabel("Nilai Piksel")
+    #         plt.ylabel("Frekuensi")
+
+    #         plt.subplot(2, 2, 4)
+    #         plt.bar(np.arange(256), histogram_blue, width=1.0, color='blue')
+    #         plt.title("Histogram Biru (B)")
+    #         plt.xlabel("Nilai Piksel")
+    #         plt.ylabel("Frekuensi")
+
+    #         plt.tight_layout()
+    #         plt.show()
 
     def imageHistogram(self):
         image_path = self.model.imgPath
         if image_path:
-            image = mpimg.imread(image_path)
-            height, width, channels = image.shape
+            image = Image.open(image_path)
+            imgray = image.convert(mode='L')
+            img_array = np.asarray(imgray)
 
-            # Mengonversi gambar ke dalam citra grayscale
-            gray = np.zeros((height, width), dtype=np.uint8)
-            for i in range(height):
-                for j in range(width):
-                    value = (0.299 * image[i, j, 0] + 0.587 * image[i, j, 1] + 0.144 * image[i, j, 2])
-                    gray[i, j] = round(value)
+            # Hitung histogram sebelum equalization
+            histogram_before = np.bincount(img_array.flatten(), minlength=256)
 
-            # Menghitung histogram citra grayscale
-            histogram_gray = np.histogram(gray, bins=256, range=(0, 256))[0]
+            # Normalisasi histogram
+            num_pixels = np.sum(histogram_before)
+            histogram_before = histogram_before / num_pixels
 
-            # Menghitung histogram untuk setiap saluran warna RGB
-            histogram_red = np.histogram(image[:,:,0], bins=256, range=(0, 256))[0]
-            histogram_green = np.histogram(image[:,:,1], bins=256, range=(0, 256))[0]
-            histogram_blue = np.histogram(image[:,:,2], bins=256, range=(0, 256))[0]
+            # Hitung cumulative distribution function (CDF)
+            chistogram_before = np.cumsum(histogram_before)
 
-            # Menampilkan histogram dalam satu gambar
-            plt.figure(figsize=(10, 5))
-            plt.subplot(2, 2, 1)
-            plt.bar(np.arange(256), histogram_gray, width=1.0, color='gray')
-            plt.title("Histogram Grayscale")
-            plt.xlabel("Nilai Piksel")
-            plt.ylabel("Frekuensi")
+            # Transformasi CDF menjadi peta perubahan
+            transform_map = np.floor(255 * chistogram_before).astype(np.uint8)
+            img_list = list(img_array.flatten())
 
-            plt.subplot(2, 2, 2)
-            plt.bar(np.arange(256), histogram_red, width=1.0, color='red')
-            plt.title("Histogram Merah (R)")
-            plt.xlabel("Nilai Piksel")
-            plt.ylabel("Frekuensi")
+            # Transformasi nilai pixel untuk disesuaikan
+            eq_img_list = [transform_map[p] for p in img_list]
 
-            plt.subplot(2, 2, 3)
-            plt.bar(np.arange(256), histogram_green, width=1.0, color='green')
-            plt.title("Histogram Hijau (G)")
-            plt.xlabel("Nilai Piksel")
-            plt.ylabel("Frekuensi")
+            # Penyesuaian gambar array pixel ke gambar penuh
+            eq_img_array = np.reshape(np.asarray(eq_img_list), img_array.shape)
+            eq_img = Image.fromarray(eq_img_array, mode='L')
 
-            plt.subplot(2, 2, 4)
-            plt.bar(np.arange(256), histogram_blue, width=1.0, color='blue')
-            plt.title("Histogram Biru (B)")
-            plt.xlabel("Nilai Piksel")
-            plt.ylabel("Frekuensi")
+            # Konversi gambar PIL ke QImage dengan mode warna yang sesuai
+            eq_qimage = QImage(eq_img_array.tobytes(), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
+
+            # Konversi QImage ke QPixmap
+            pixmap = QPixmap.fromImage(eq_qimage)
+
+            self.model.image_result_changed.emit(pixmap)
+            # eq_img.save("result/image.png")
+
+            # Hitung histogram sesudah equalization
+            histogram_after = np.bincount(
+                eq_img_array.flatten(), minlength=256)
+
+            # Normalisasi histogram sesudah equalization
+            histogram_after = histogram_after / np.sum(histogram_after)
+
+            # Tampilkan histogram sebelum dan sesudah equalization
+            plt.figure(figsize=(12, 6))
+            plt.subplot(1, 2, 1)
+            plt.bar(range(256), histogram_before, color='b', alpha=0.7)
+            plt.title('Before Histogram Equalization')
+            plt.xlabel('Pixel Value')
+            plt.ylabel('Normalized Frequency')
+
+            plt.subplot(1, 2, 2)
+            plt.bar(range(256), histogram_after, color='r', alpha=0.7)
+            plt.title('After Histogram Equalization')
+            plt.xlabel('Pixel Value')
+            plt.ylabel('Normalized Frequency')
 
             plt.tight_layout()
             plt.show()
 
     def identify_axes(ax_dict, fontsize=48):
         kw = dict(ha="center", va="center",
-        fontsize=fontsize, color="darkgrey")
+                  fontsize=fontsize, color="darkgrey")
         for k, ax in ax_dict.items():
             ax.text(0.5, 0.5, k,
-        transform=ax.transAxes, **kw)
+                    transform=ax.transAxes, **kw)
 
     def onImageProces(self, condition):
         image_path = self.model.imgPath

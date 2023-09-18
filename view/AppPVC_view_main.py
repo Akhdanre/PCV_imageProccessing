@@ -30,13 +30,13 @@ class AppPVCViewMain(QMainWindow):
     def on_image_change(self, value):
         pixmap = QPixmap(value)
         self.view.label.setPixmap(pixmap)
-        # self.view.label.setScaledContents(True)
+        self.view.label.setScaledContents(True)
 
 
     @pyqtSlot(QPixmap)
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
-        # self.view.label_2.setScaledContents(True)
+        self.view.label_2.setScaledContents(True)
 
 
 
