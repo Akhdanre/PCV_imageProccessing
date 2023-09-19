@@ -22,7 +22,9 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionInvers.triggered.connect(lambda: self.controller.onImageProces("invers"))
     
         self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)
-
+        self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)
+         
+        self.view.actionAritmatika.triggered.connect(self.controller.onAritmatikaPage)
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
 

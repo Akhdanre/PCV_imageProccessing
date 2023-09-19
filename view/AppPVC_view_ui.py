@@ -250,6 +250,9 @@ class PVC_view(object):
         self.menubar.addAction(self.menuFilter.menuAction())
         self.menubar.addAction(self.menuEdge_Detection_2.menuAction())
         self.menubar.addAction(self.menuMorfologi.menuAction())
+        self.actionAritmatika = QtWidgets.QAction(Project1)
+        self.actionAritmatika.setObjectName("actionAritmatika")
+        self.menuAritmetical_Operation.addAction(self.actionAritmatika)
 
         self.retranslateUi(Project1)
         QtCore.QMetaObject.connectSlotsByName(Project1)
@@ -351,3 +354,5 @@ class PVC_view(object):
         self.actionCross_4.setText(_translate("Project1", "Cross 3"))
         self.actionSquare_9.setText(_translate("Project1", "Square 9"))
         self.actionSquare_10.setText(_translate("Project1", "Square 9"))
+        self.actionAritmatika.setText(_translate("Project1", "Aritmatika"))
+

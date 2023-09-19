@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QFileDialog, QWidget
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
 from PyQt5.QtGui import QPixmap, QImage
@@ -7,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from PIL import Image
+from operasi_image.OperasiAritmatika import Ui_MainWindow
 
 
 class AppPVCController(QObject):
@@ -173,3 +175,9 @@ class AppPVCController(QObject):
                     else:
                         gray[i, j] = 255 - value
         return gray
+
+    def onAritmatikaPage(self):
+        self.MainWindow = QtWidgets.QMainWindow()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self.MainWindow)
+        self.MainWindow.show()
