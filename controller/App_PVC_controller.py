@@ -154,8 +154,14 @@ class AppPVCController(QObject):
         if condition == "lightness":
             for i in range(height):
                 for j in range(width):
-                    gray[i, j] = np.uint8(
-                        (0.299 * img[i, j, 0] + 0.587 * img[i, j, 1] + 0.144 * img[i, j, 2]) / 3)
+                    value = (max((0.299 * img[i, j, 0]), (0.587 * img[i, j, 1]),  (0.144 * img[i, j, 2])) +
+                             min(img[i, j, 0], img[i, j, 1], img[i, j, 2])) // 2
+                    if value > 255:
+                        gray[i, j] = np.uint8(255)
+                    elif value < 0:
+                        gray[i, j] = np.uint8(0)
+                    else:
+                        gray[i, j] = np.uint8(value)
         if condition == "luminance":
             for i in range(height):
                 for j in range(width):
