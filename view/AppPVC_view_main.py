@@ -28,6 +28,8 @@ class AppPVCViewMain(QMainWindow):
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
 
+        
+
     @pyqtSlot(str)
     def on_image_change(self, value):
         pixmap = QPixmap(value)
