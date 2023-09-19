@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap, QImage, QColor
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -187,3 +187,35 @@ class AppPVCController(QObject):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.MainWindow)
         self.MainWindow.show()
+
+    def onFlipVertical(self):
+        image_path = self.model.imgPath
+        if image_path:
+            img = mpimg.imread(image_path)
+            flipped_img = QImage(
+                img.shape[1], img.shape[0], QImage.Format_RGB32)
+
+            for x in range(img.shape[1]):
+                for y in range(img.shape[0]):
+                    pixel = img[y, x]
+                    flipped_y = img.shape[0] - 1 - y
+                    flipped_img.setPixelColor(x, flipped_y, QColor(*pixel))
+
+            flipped_pixmap = QPixmap.fromImage(flipped_img)
+            self.model.image_result_changed.emit(flipped_pixmap)
+
+    def onFlipHorizontal(self):
+        image_path = self.model.imgPath
+        if image_path:
+            img = mpimg.imread(image_path)
+            flipped_img = QImage(
+                img.shape[1], img.shape[0], QImage.Format_RGB32)
+
+            for x in range(img.shape[1]):
+                for y in range(img.shape[0]):
+                    pixel = img[y, img.shape[1] - 1 - x]  # Membalikkan piksel secara horizontal
+                    flipped_img.setPixelColor(x, y, QColor(*pixel))
+
+            flipped_pixmap = QPixmap.fromImage(flipped_img)
+            self.model.image_result_changed.emit(flipped_pixmap)
+
