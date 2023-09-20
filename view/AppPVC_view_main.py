@@ -21,6 +21,7 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionLuminance.triggered.connect(lambda: self.controller.onImageProces("luminance"))
         self.view.actionLightness.triggered.connect(lambda: self.controller.onImageProces("lightness"))
         self.view.actionInvers.triggered.connect(lambda: self.controller.onImageProces("invers"))
+        self.view.actionContrast.triggered.connect(self.controller.onContrast)
 
         self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)
         self.view.actionHistogram_Equalization.triggered.connect(self.controller.imageHistogram)

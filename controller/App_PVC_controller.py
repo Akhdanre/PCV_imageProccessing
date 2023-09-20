@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
-from PyQt5.QtGui import QPixmap, QImage, QColor
+from PyQt5.QtGui import QPixmap, QImage, QColor, QImageReader
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -213,9 +213,45 @@ class AppPVCController(QObject):
 
             for x in range(img.shape[1]):
                 for y in range(img.shape[0]):
-                    pixel = img[y, img.shape[1] - 1 - x]  # Membalikkan piksel secara horizontal
+                    # Membalikkan piksel secara horizontal
+                    pixel = img[y, img.shape[1] - 1 - x]
                     flipped_img.setPixelColor(x, y, QColor(*pixel))
 
             flipped_pixmap = QPixmap.fromImage(flipped_img)
             self.model.image_result_changed.emit(flipped_pixmap)
 
+    def onContrast(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            value = np.zeros((height, width, channels), dtype=np.uint8)  # Sesuaikan bentuk array 'value'
+
+            c = 70
+            f = 259 * (c + 255) / (255 * (259 - c))  # Perbaiki ekspresi 'f'
+
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    rValue = f * (red - 128) + 128
+                    gValue = f * (green - 128) + 128
+                    bValue = f * (blue - 128) + 128
+
+                    
+                    value[i, j, 0] = rValue if rValue <= 255 and rValue >= 0 else 0 if rValue < 0 else 255
+                    value[i, j, 1] = gValue if gValue <= 255 and gValue >= 0 else 0 if gValue < 0 else 255
+                    value[i, j, 2] = bValue if bValue <= 255 and bValue >= 0 else 0 if bValue < 0 else 255
+
+            height1, width1, channels1 = value.shape  # Sesuaikan bentuk 'value'
+            bytes_per_line = channels1 * width1  # Perbaiki perhitungan bytes_per_line
+            q_img = QImage(value.data, width1, height1, bytes_per_line, QImage.Format_RGB888)  # Gunakan Format_RGB888
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
+
+        
