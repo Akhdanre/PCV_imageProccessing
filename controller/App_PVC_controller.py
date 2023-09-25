@@ -73,10 +73,10 @@ class AppPVCController(QObject):
             num_pixels = np.sum(histogram_before)
             histogram_before = histogram_before / num_pixels
 
-            # Hitung cumulative distribution function (CDF)
+            # Hitung histogram gambar sebelum perubahan
             chistogram_before = np.cumsum(histogram_before)
 
-            # Transformasi CDF menjadi peta perubahan
+            # Transformasi menjadi maps 
             transform_map = np.floor(255 * chistogram_before).astype(np.uint8)
             img_list = list(img_array.flatten())
 
@@ -91,20 +91,14 @@ class AppPVCController(QObject):
             eq_qimage = QImage(eq_img_array.tobytes(
             ), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
 
-            # Konversi QImage ke QPixmap
             pixmap = QPixmap.fromImage(eq_qimage)
 
             self.model.image_result_changed.emit(pixmap)
-            # eq_img.save("result/image.png")
-
-            # Hitung histogram sesudah equalization
+            
             histogram_after = np.bincount(
                 eq_img_array.flatten(), minlength=256)
-
-            # Normalisasi histogram sesudah equalization
             histogram_after = histogram_after / np.sum(histogram_after)
 
-            # Tampilkan histogram sebelum dan sesudah equalization
             plt.figure(figsize=(12, 6))
             plt.subplot(1, 2, 1)
             plt.bar(range(256), histogram_before, color='b', alpha=0.7)
@@ -149,6 +143,7 @@ class AppPVCController(QObject):
         if condition == "average":
             for i in range(height):
                 for j in range(width):
+                    """ rumus average = (R + G + B) / 3"""
                     gray[i, j] = np.uint8(
                         (0.299 * img[i, j, 0] + 0.587 * img[i, j, 1] + 0.144 * img[i, j, 2]) / 3)
         if condition == "lightness":
@@ -225,10 +220,10 @@ class AppPVCController(QObject):
         if image_path:
             image = mpimg.imread(image_path)
             height, width, channels = image.shape
-            value = np.zeros((height, width, channels), dtype=np.uint8)  # Sesuaikan bentuk array 'value'
+            value = np.zeros((height, width, channels), dtype=np.uint8)
 
             c = 70
-            f = 259 * (c + 255) / (255 * (259 - c))  # Perbaiki ekspresi 'f'
+            f = 259 * (c + 255) / (255 * (259 - c))
 
             for i in range(height):
                 for j in range(width):
@@ -240,14 +235,13 @@ class AppPVCController(QObject):
                     gValue = f * (green - 128) + 128
                     bValue = f * (blue - 128) + 128
 
-                    
                     value[i, j, 0] = rValue if rValue <= 255 and rValue >= 0 else 0 if rValue < 0 else 255
                     value[i, j, 1] = gValue if gValue <= 255 and gValue >= 0 else 0 if gValue < 0 else 255
                     value[i, j, 2] = bValue if bValue <= 255 and bValue >= 0 else 0 if bValue < 0 else 255
 
-            height1, width1, channels1 = value.shape  # Sesuaikan bentuk 'value'
-            bytes_per_line = channels1 * width1  # Perbaiki perhitungan bytes_per_line
-            q_img = QImage(value.data, width1, height1, bytes_per_line, QImage.Format_RGB888)  # Gunakan Format_RGB888
+            height1, width1, channels1 = value.shape
+            bytes_per_line = channels1 * width1
+            q_img = QImage(value.data, width1, height1, bytes_per_line, QImage.Format_RGB888)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
