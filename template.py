@@ -1,39 +1,41 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QSlider, QVBoxLayout, QLabel
+from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 
-class SliderExample(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
+class FloatingLabel(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.label = QLabel("Floating Label", self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.setGeometry(100, 100, 200, 50)
 
-    def initUI(self):
-        self.setWindowTitle('PyQt Slider Example')
-        self.setGeometry(100, 100, 400, 200)
+        self.dragging = False
+        self.offset = QPoint()
 
-        layout = QVBoxLayout()
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.dragging = True
+            self.offset = event.pos()
 
-        self.label = QLabel('Slider Value: 0', self)
-        layout.addWidget(self.label)
+    def mouseMoveEvent(self, event):
+        if self.dragging:
+            new_pos = self.mapToGlobal(event.pos() - self.offset)
+            self.move(new_pos)
 
-        self.slider = QSlider()
-        self.slider.setOrientation(1)  # Set the slider orientation to vertical
-        self.slider.setMinimum(0)
-        self.slider.setMaximum(100)
-        self.slider.setValue(0)
-        self.slider.valueChanged.connect(self.sliderValueChanged)
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.dragging = False
 
-        layout.addWidget(self.slider)
-        self.setLayout(layout)
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        painter.fillRect(self.rect(), Qt.lightGray)
+        painter.setBrush(Qt.white)
+        painter.drawRect(self.rect())
 
-    def sliderValueChanged(self):
-        value = self.slider.value()
-        self.label.setText(f'Slider Value: {value}')
-
-def main():
-    app = QApplication(sys.argv)
-    ex = SliderExample()
-    ex.show()
-    sys.exit(app.exec_())
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     app = QApplication(sys.argv)
+#     window = FloatingLabel()
+#     window.show()
+#     sys.exit(app.exec_())

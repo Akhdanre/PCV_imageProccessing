@@ -31,8 +31,8 @@ class AppPVCViewMain(QMainWindow):
 
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
-        self.view.actionHistogram_Equalization.triggered.connect(
-            self.controller.imageHistogram)
+        # self.view.actionHistogram_Equalization.triggered.connect(
+        #     self.controller.imageHistogram)
 
         self.view.actionVertikal.triggered.connect(
             self.controller.onFlipVertical)
