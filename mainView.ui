@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1198</width>
+    <height>661</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>-1</y>
+      <width>1171</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>130</y>
+       <width>411</width>
+       <height>291</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>0</y>
+      <width>31</width>
+      <height>601</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1198</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuOpen">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuColor">
+    <property name="title">
+     <string>Color</string>
+    </property>
+    <widget class="QMenu" name="menuGrayscale">
+     <property name="title">
+      <string>Grayscale</string>
+     </property>
+     <addaction name="actionAverage"/>
+     <addaction name="actionLightness"/>
+     <addaction name="actionLuminance"/>
+    </widget>
+    <addaction name="menuGrayscale"/>
+    <addaction name="actionBrightness"/>
+    <addaction name="actionInvers"/>
+   </widget>
+   <widget class="QMenu" name="menuAritmatika">
+    <property name="title">
+     <string>Aritmatika</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuGeometri">
+    <property name="title">
+     <string>Geometri</string>
+    </property>
+    <widget class="QMenu" name="menuFlip">
+     <property name="title">
+      <string>Flip</string>
+     </property>
+     <addaction name="actionVertical"/>
+     <addaction name="actionHorizontal"/>
+    </widget>
+    <addaction name="menuFlip"/>
+    <addaction name="actionCrop"/>
+   </widget>
+   <widget class="QMenu" name="menuHistogram">
+    <property name="title">
+     <string>Histogram</string>
+    </property>
+    <addaction name="actionHistogram_Equalization"/>
+   </widget>
+   <addaction name="menuOpen"/>
+   <addaction name="menuColor"/>
+   <addaction name="menuAritmatika"/>
+   <addaction name="menuHistogram"/>
+   <addaction name="menuGeometri"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="actionBrightness">
+   <property name="text">
+    <string>Brightness</string>
+   </property>
+  </action>
+  <action name="actionAverage">
+   <property name="text">
+    <string>Average</string>
+   </property>
+  </action>
+  <action name="actionLightness">
+   <property name="text">
+    <string>Lightness</string>
+   </property>
+  </action>
+  <action name="actionLuminance">
+   <property name="text">
+    <string>Luminance</string>
+   </property>
+  </action>
+  <action name="actionInvers">
+   <property name="text">
+    <string>Invers</string>
+   </property>
+  </action>
+  <action name="actionCrop">
+   <property name="text">
+    <string>Crop</string>
+   </property>
+  </action>
+  <action name="actionVertical">
+   <property name="text">
+    <string>Vertical</string>
+   </property>
+  </action>
+  <action name="actionHorizontal">
+   <property name="text">
+    <string>Horizontal</string>
+   </property>
+  </action>
+  <action name="actionHistogram_Equalization">
+   <property name="text">
+    <string>Histogram Equalization</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
