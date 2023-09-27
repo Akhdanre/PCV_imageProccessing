@@ -39,7 +39,7 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
-        self.view.actionAritmatika.triggered.connect(self.slider)
+        self.view.actionAritmatika.triggered.connect(self.controller.onAritmatikaPage)
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
@@ -55,13 +55,13 @@ class AppPVCViewMain(QMainWindow):
     @pyqtSlot(str)
     def on_image_change(self, value):
         pixmap = QPixmap(value)
-        self.view.label.setAlignment(Qt.AlignCenter)
-        self.view.label.setStyleSheet("QLabel {background-color: red;}")
+        # self.view.label.setAlignment(Qt.AlignCenter)
+        # self.view.label.setStyleSheet("QLabel {background-color: red;}")
         self.view.label.setPixmap(pixmap)
-        self.view.label.resize(pixmap.width(), pixmap.height())
+        # self.view.label.resize(pixmap.width(), pixmap.height())
 
     @pyqtSlot(QPixmap)
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
-        self.view.label.resize(value.width(), value.height())
+        # self.view.label.resize(value.width(), value.height())
         # self.view.label_2.setScaledContents(True)
