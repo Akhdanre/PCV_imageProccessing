@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
-from mainView import Ui_mainWindow
-from model.counter_model import ImageModel  # Import model yang sudah dibuat
-# from ui_mainwindow import Ui_mainWindow 
+from view.mainView import Ui_mainWindow
+from model.counter_model import ImageModel 
+from pathlib import Path
 
 
 class ImageController(QMainWindow):
@@ -17,14 +17,23 @@ class ImageController(QMainWindow):
         self.ui.actionOpen.triggered.connect(self.open_image)
         self.ui.actionSave.triggered.connect(self.save_image)
         self.ui.actionQuit.triggered.connect(self.quit_application)
+        
+        self.model.image_path_changed.connect(self.ui.on_image_change)
 
     def open_image(self):
-        # Tambahkan logika untuk membuka gambar di sini
-        options = QFileDialog.Options()
-        file_path, _ = QFileDialog.getOpenFileName(self, "Open Image File", "", "Images (*.png *.jpg *.bmp *.tif);;All Files (*)", options=options)
-        if file_path:
-            # Lakukan sesuatu dengan file_path, misalnya, menampilkan gambar di label
-            pass
+        file_filter = "Image Files (*.jpg *.png)"
+        directory_path = Path.home() / "Pictures"
+
+        response, _ = QFileDialog.getOpenFileName(
+            caption="Select Image",
+            directory=str(directory_path),
+            filter=file_filter,
+            initialFilter=file_filter
+        )
+
+        if response:
+            self.model.addImgPath(response)
+            
 
     def save_image(self):
         # Tambahkan logika untuk menyimpan gambar di sini

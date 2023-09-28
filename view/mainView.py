@@ -1,15 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
-from PyQt5.QtCore import pyqtSignal, Qt
+# from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSlot, Qt
+from PyQt5.QtGui import QPixmap
 
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
-        screen = QDesktopWidget().screenGeometry()
-        width, height = screen.width(), screen.height()
-        print(width, height)
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(width, height)
+        mainWindow.resize(1198, 661)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(self.centralwidget)
@@ -120,3 +119,18 @@ class Ui_mainWindow(object):
         self.actionHistogram_Equalization.setText(
             _translate("mainWindow", "Histogram Equalization"))
 
+    @pyqtSlot(str)
+    def on_image_change(self, value):
+        pixmap = QPixmap(value)
+        print(value)
+        # self.view.label.setAlignment(Qt.AlignCenter)
+        # self.view.label.setStyleSheet("QLabel {background-color: red;}")
+        self.label.setPixmap(pixmap)
+        
+        # self.view.label.resize(pixmap.width(), pixmap.height())
+
+    @pyqtSlot(QPixmap)
+    def on_image_result(self, value):
+        self.view.label_2.setPixmap(value)
+        # self.view.label.resize(value.width(), value.height())
+        # self.view.label_2.setScaledContents(True)
