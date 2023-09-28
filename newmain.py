@@ -1,9 +1,14 @@
 
-from controller.counter_controller import CounterController
 import sys
 from PyQt5.QtWidgets import QApplication
 
-if __name__ == '__main__':
+from controller.counter_controller import ImageController
+
+if __name__ == "__main__":
+    import sys
+    from PyQt5.QtWidgets import QApplication
+
     app = QApplication(sys.argv)
-    controller = CounterController()
+    controller = ImageController()
+    controller.show()
     sys.exit(app.exec_())

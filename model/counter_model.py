@@ -1,9 +1,6 @@
-class CounterModel:
+class ImageModel:
     def __init__(self):
-        self.count = 0
+        # Tambahkan atribut-atribut model di sini
+        pass
 
-    def increment(self):
-        self.count += 1
-
-    def get_count(self):
-        return self.count
+    # Tambahkan metode-metode model di sini

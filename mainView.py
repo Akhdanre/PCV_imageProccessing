@@ -1,14 +1,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QDesktopWidget, QMainWindow
+from PyQt5.QtCore import pyqtSignal, Qt
 
 
 class Ui_mainWindow(object):
     def setupUi(self, mainWindow):
+        screen = QDesktopWidget().screenGeometry()
+        width, height = screen.width(), screen.height()
+        print(width, height)
         mainWindow.setObjectName("mainWindow")
-        mainWindow.resize(1198, 661)
+        mainWindow.resize(width, height)
         self.centralwidget = QtWidgets.QWidget(mainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(-1, -1, 1171, 601))
+        self.frame.setGeometry(QtCore.QRect(0, 0, 1171, 601))
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -66,7 +71,8 @@ class Ui_mainWindow(object):
         self.actionHorizontal = QtWidgets.QAction(mainWindow)
         self.actionHorizontal.setObjectName("actionHorizontal")
         self.actionHistogram_Equalization = QtWidgets.QAction(mainWindow)
-        self.actionHistogram_Equalization.setObjectName("actionHistogram_Equalization")
+        self.actionHistogram_Equalization.setObjectName(
+            "actionHistogram_Equalization")
         self.menuOpen.addAction(self.actionOpen)
         self.menuOpen.addAction(self.actionSave)
         self.menuOpen.addAction(self.actionQuit)
@@ -111,4 +117,6 @@ class Ui_mainWindow(object):
         self.actionCrop.setText(_translate("mainWindow", "Crop"))
         self.actionVertical.setText(_translate("mainWindow", "Vertical"))
         self.actionHorizontal.setText(_translate("mainWindow", "Horizontal"))
-        self.actionHistogram_Equalization.setText(_translate("mainWindow", "Histogram Equalization"))
+        self.actionHistogram_Equalization.setText(
+            _translate("mainWindow", "Histogram Equalization"))
+
