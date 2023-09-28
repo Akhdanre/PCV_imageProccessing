@@ -7,7 +7,6 @@ class FloatingWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.label = QLabel("Floating Label", self)
-        # self.label.setAlignment(Qt.AlignCenter)
         self.setGeometry(100, 100, 200, 200)
 
         self.dragging = False

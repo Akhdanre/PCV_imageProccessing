@@ -16,11 +16,12 @@ class AppPVCViewMain(QMainWindow):
         self.view.setupUi(self)
 
 
+        self.labelImageB = FloatingWidget()
+        self.labelImageB.move(0, 0)
 
         screen = QDesktopWidget().screenGeometry()
         width, height = screen.width(), screen.height()
 
-        labelImageB = FloatingWidget()
 
         self.view.actionOpen.triggered.connect(self.controller.onOpen)
         self.view.actionSave.triggered.connect(lambda: self.controller.onSaveAs(self.view.label_2))
