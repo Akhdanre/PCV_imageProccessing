@@ -11,7 +11,8 @@ class FloatingWidget(QWidget):
 
         self.dragging = False
         self.offset = QPoint()
-
+        self.setFocusPolicy(Qt.StrongFocus)
+ 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.dragging = True
@@ -21,6 +22,10 @@ class FloatingWidget(QWidget):
         if self.dragging:
             new_pos = self.mapToGlobal(event.pos() - self.offset)
             self.move(new_pos)
+
+    def keyPressEvent(self, event):  # Menggunakan keyPressEvent untuk event keyboard
+        if event.key() == Qt.Key_Q:
+            print("Key Q pressed")
 
     def mouseReleaseEvent(self, event):
         if event.button() == Qt.LeftButton:

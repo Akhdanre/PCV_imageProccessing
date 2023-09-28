@@ -17,9 +17,8 @@ class AppPVCViewMain(QMainWindow):
 
         screen = QDesktopWidget().screenGeometry()
         width, height = screen.width(), screen.height()
-        x = (screen.width() - self.width()) / 2
-        y = (screen.height() - self.height()) / 2
-
+        x = (width - self.width()) / 2
+        y = (height - self.height()) / 2
         self.move(x, y)
 
         self.labelImageB = FloatingWidget(self)
