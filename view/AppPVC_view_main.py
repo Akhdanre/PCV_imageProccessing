@@ -4,6 +4,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot, Qt
 from view.AppPVC_view_ui import PVC_view
 from PyQt5.QtWidgets import QDesktopWidget
+from view.floatingWidget import FloatingWidget
 
 
 class AppPVCViewMain(QMainWindow):
@@ -14,8 +15,12 @@ class AppPVCViewMain(QMainWindow):
         self.view = PVC_view()
         self.view.setupUi(self)
 
+
+
         screen = QDesktopWidget().screenGeometry()
         width, height = screen.width(), screen.height()
+
+        labelImageB = FloatingWidget()
 
         self.view.actionOpen.triggered.connect(self.controller.onOpen)
         self.view.actionSave.triggered.connect(lambda: self.controller.onSaveAs(self.view.label_2))
