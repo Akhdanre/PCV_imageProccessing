@@ -41,18 +41,18 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionContrast.triggered.connect(
             lambda: self.sliderWindow("contrast"))
 
+        self.view.actionBrightness.triggered.connect(lambda: self.sliderWindow("brightness"))
+
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
-        # self.view.actionHistogram_Equalization.triggered.connect(
-        #     self.controller.imageHistogram)
 
         self.view.actionVertikal.triggered.connect(
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
-        # self.view.actionAritmatika.triggered.connect(
-        #     self.controller.onAritmatikaPage)
+        self.view.actionAritmatika.triggered.connect(
+            self.controller.onAritmatikaPage)
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
@@ -66,8 +66,6 @@ class AppPVCViewMain(QMainWindow):
     @pyqtSlot(str)
     def on_image_change(self, value):
         pixmap = QPixmap(value)
-        # self.view.label.setAlignment(Qt.AlignCenter)
-        # self.view.label.setStyleSheet("QLabel {background-color: red;}")
         self.view.label.setPixmap(pixmap)
 
     @pyqtSlot(QPixmap)

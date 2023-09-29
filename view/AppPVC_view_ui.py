@@ -221,6 +221,9 @@ class PVC_view(object):
         self.actionContrast = QtWidgets.QAction(Project1)
 
         self.actionContrast.setObjectName("actionContrast")
+        self.actionBrightness = QtWidgets.QAction(Project1)
+
+        self.actionBrightness.setObjectName("actionBrightness")
 
         self.action1_bit = QtWidgets.QAction(Project1)
 
@@ -389,6 +392,7 @@ class PVC_view(object):
         self.menuRGB_to_Graysclae.addAction(self.actionLuminance)
 
         self.menuBrightness.addAction(self.actionContrast)
+        self.menuBrightness.addAction(self.actionBrightness)
 
         self.menuBit_Depth.addAction(self.action1_bit)
 
@@ -639,6 +643,7 @@ class PVC_view(object):
         self.actionLuminance.setText(_translate("Project1", "Luminance"))
 
         self.actionContrast.setText(_translate("Project1", "Contrast"))
+        self.actionBrightness.setText(_translate("Project1", "Brightness"))
 
         self.action1_bit.setText(_translate("Project1", "1 bit"))
 
