@@ -1,8 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow,  QSlider, QVBoxLayout, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QSlider, QVBoxLayout, QLabel, QMessageBox, QWidget
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot, Qt
 from view.AppPVC_view_ui import PVC_view
+import sys
+
+from view.slider_window import SliderWindow
 
 
 class AppPVCViewMain(QMainWindow):
@@ -27,7 +30,8 @@ class AppPVCViewMain(QMainWindow):
             lambda: self.controller.onImageProces("lightness"))
         self.view.actionInvers.triggered.connect(
             lambda: self.controller.onImageProces("invers"))
-        self.view.actionContrast.triggered.connect(self.controller.onContrast)
+        self.view.actionContrast.triggered.connect(
+            lambda: self.sliderWindow("contrast"))
 
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
@@ -39,18 +43,17 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
-        self.view.actionAritmatika.triggered.connect(self.controller.onAritmatikaPage)
+        self.view.actionAritmatika.triggered.connect(
+            self.controller.onAritmatikaPage)
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
 
-    def slider(self):
-        msg_box = QMessageBox()
-        msg_box.setWindowTitle('Popup Window')
-        msg_box.setText('This is a Popup Window!')
-        msg_box.setIcon(QMessageBox.Information)
-        msg_box.setStandardButtons(QMessageBox.Ok)
-        msg_box.exec_()
+    def sliderWindow(self, route):
+        sliderW = SliderWindow(self)
+        sliderW.show()
+        sliderW.button.clicked.connect(
+            lambda: self.controller.brightnessRoute(route, sliderW.slider.value()))
 
     @pyqtSlot(str)
     def on_image_change(self, value):
