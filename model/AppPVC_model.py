@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPixmap
 class AppPVCModel(QObject):
     
     image_path_changed = pyqtSignal(str)
+    image_path_changed2 = pyqtSignal(str)
     image_result_changed = pyqtSignal(QPixmap)
 
     def __init__(self):
@@ -17,4 +18,12 @@ class AppPVCModel(QObject):
     def addImgPath(self, value):
         self.path = value
         self.image_path_changed.emit(value)
+
+    @property
+    def imgPath(self): 
+        return self.path2
+    
+    def addImgPath(self, value):
+        self.path2 = value
+        self.image_path_changed2.emit(value)
 

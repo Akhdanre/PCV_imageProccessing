@@ -23,6 +23,11 @@ class AppPVCViewMain(QMainWindow):
         x = (width - self.width()) / 2
         y = (height - self.height()) / 2
         self.move(x, y)
+        # screen = QDesktopWidget().screenGeometry()
+        # width, height = screen.width(), screen.height()
+        # x = (width - self.width()) / 2
+        # y = (height - self.height()) / 2
+        # self.move(x, y)
 
         self.view.actionOpen.triggered.connect(self.controller.onOpen)
         self.view.actionSave_As.triggered.connect(
@@ -41,7 +46,8 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionContrast.triggered.connect(
             lambda: self.sliderWindow("contrast"))
 
-        self.view.actionBrightness.triggered.connect(lambda: self.sliderWindow("brightness"))
+        self.view.actionBrightness.triggered.connect(
+            lambda: self.sliderWindow("brightness"))
 
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
@@ -51,11 +57,21 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
+        # self.view.actionAritmatika.triggered.connect(
+        #     self.controller.onAritmatikaPage)
         self.view.actionAritmatika.triggered.connect(
-            self.controller.onAritmatikaPage)
+            self.show_middle_label)
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
+
+        self.view.label_3.mousePressEvent = self.lable3Open
+
+
+    def lable3Open(self, event):
+        if event.button() == Qt.LeftButton:
+            self.controller.onOpen()
+   
 
     def sliderWindow(self, route):
         sliderW = SliderWindow(self)
@@ -63,10 +79,23 @@ class AppPVCViewMain(QMainWindow):
         sliderW.button.clicked.connect(
             lambda: self.controller.brightnessRoute(route, sliderW.slider.value()))
 
+    def show_middle_label(self):
+        self.resize(1425, 518)
+        x_window = (QtWidgets.QDesktopWidget().width() - self.width()) / 2
+        y_window = (QtWidgets.QDesktopWidget().height() - self.height()) / 2
+        self.move(x_window, y_window)
+        self.view.label_2.setGeometry(950, 20, 451, 441)
+        self.view.label_3.show()
+
     @pyqtSlot(str)
     def on_image_change(self, value):
         pixmap = QPixmap(value)
         self.view.label.setPixmap(pixmap)
+
+    @pyqtSlot(str)
+    def on_image_change2(self, value):
+        pixmap = QPixmap(value)
+        self.view.label_3.setPixmap(pixmap)
 
     @pyqtSlot(QPixmap)
     def on_image_result(self, value):

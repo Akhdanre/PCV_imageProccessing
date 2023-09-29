@@ -32,6 +32,13 @@ class PVC_view(object):
 
         self.label_2.setObjectName("label_2")
 
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(480, 20, 451, 441))
+        self.label_3.setFrameShape(QtWidgets.QFrame.Box)
+        self.label_3.setText("Click to pick image")
+        self.label_3.setObjectName("label_3")
+        self.label_3.hide()
+
         Project1.setCentralWidget(self.centralwidget)
 
         self.menubar = QtWidgets.QMenuBar(Project1)
