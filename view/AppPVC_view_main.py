@@ -1,10 +1,13 @@
-from PyQt5.QtWidgets import QMainWindow,  QSlider, QVBoxLayout, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow,  QSlider, QVBoxLayout, QLabel, QMessageBox, QWidget
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot, Qt
 from view.AppPVC_view_ui import PVC_view
 from PyQt5.QtWidgets import QDesktopWidget
 from view.floatingWidget import FloatingWidget
+import sys
+
+from view.slider_window import SliderWindow
 
 
 class AppPVCViewMain(QMainWindow):
@@ -40,7 +43,8 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionInvers.triggered.connect(
             lambda: self.controller.onImageProces("invers"))
         
-        # self.view.actionContrast.triggered.connect(self.controller.onContrast)
+        # self.view.action.triggered.connect(
+        #     lambda: self.sliderWindow("contrast"))
 
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
@@ -57,6 +61,12 @@ class AppPVCViewMain(QMainWindow):
 
         self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
+
+    def sliderWindow(self, route):
+        sliderW = SliderWindow(self)
+        sliderW.show()
+        sliderW.button.clicked.connect(
+            lambda: self.controller.brightnessRoute(route, sliderW.slider.value()))
 
     @pyqtSlot(str)
     def on_image_change(self, value):

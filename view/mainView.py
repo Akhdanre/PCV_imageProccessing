@@ -118,19 +118,3 @@ class Ui_mainWindow(object):
         self.actionHorizontal.setText(_translate("mainWindow", "Horizontal"))
         self.actionHistogram_Equalization.setText(
             _translate("mainWindow", "Histogram Equalization"))
-
-    @pyqtSlot(str)
-    def on_image_change(self, value):
-        pixmap = QPixmap(value)
-        print(value)
-        # self.view.label.setAlignment(Qt.AlignCenter)
-        # self.view.label.setStyleSheet("QLabel {background-color: red;}")
-        self.label.setPixmap(pixmap)
-        
-        # self.view.label.resize(pixmap.width(), pixmap.height())
-
-    @pyqtSlot(QPixmap)
-    def on_image_result(self, value):
-        self.view.label_2.setPixmap(value)
-        # self.view.label.resize(value.width(), value.height())
-        # self.view.label_2.setScaledContents(True)
