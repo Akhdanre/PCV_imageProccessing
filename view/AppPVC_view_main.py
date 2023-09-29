@@ -24,15 +24,10 @@ class AppPVCViewMain(QMainWindow):
         y = (height - self.height()) / 2
         self.move(x, y)
 
-        self.labelImageB = FloatingWidget(self)
-        self.labelImageB.move(0, 441)
-
-
-
         self.view.actionOpen.triggered.connect(self.controller.onOpen)
-        self.view.actionSave.triggered.connect(lambda: self.controller.onSaveAs(self.view.label_2))
-        self.view.actionQuit.triggered.connect(self.controller.onExit)
-
+        self.view.actionSave_As.triggered.connect(
+            lambda: self.controller.onSaveAs(self.view.label_2))
+        self.view.actionExit.triggered.connect(self.controller.onExit)
 
         self.view.actionAverage.triggered.connect(
             lambda: self.controller.onImageProces("average"))
@@ -42,16 +37,16 @@ class AppPVCViewMain(QMainWindow):
             lambda: self.controller.onImageProces("lightness"))
         self.view.actionInvers.triggered.connect(
             lambda: self.controller.onImageProces("invers"))
-        
-        # self.view.action.triggered.connect(
-        #     lambda: self.sliderWindow("contrast"))
+
+        self.view.actionContrast.triggered.connect(
+            lambda: self.sliderWindow("contrast"))
 
         self.view.actionHistogram_Equalization.triggered.connect(
             self.controller.imageHistogram)
         # self.view.actionHistogram_Equalization.triggered.connect(
         #     self.controller.imageHistogram)
 
-        self.view.actionVertical.triggered.connect(
+        self.view.actionVertikal.triggered.connect(
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
