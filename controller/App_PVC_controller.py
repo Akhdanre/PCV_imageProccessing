@@ -17,7 +17,7 @@ class AppPVCController(QObject):
         super().__init__()
         self.model = model
 
-    def onOpen(self):
+    def onOpen(self, lable):
         file_filter = "Image Files (*.jpg *.png)"
         directory_path = Path.home() / "Pictures"
 
@@ -27,9 +27,11 @@ class AppPVCController(QObject):
             filter=file_filter,
             initialFilter=file_filter
         )
-
         if response:
-            self.model.addImgPath(response)
+            if lable == 1:
+                self.model.addImgPath(response)
+            elif lable == 2:
+                self.model.addImgPath2(response)
 
     def onSave(self):
         print("onSave")
@@ -52,7 +54,6 @@ class AppPVCController(QObject):
                 pixmap = QPixmap(label.size())
                 label.render(pixmap)
                 pixmap.save(new_path)
-
         else:
             print("No image path available.")
 

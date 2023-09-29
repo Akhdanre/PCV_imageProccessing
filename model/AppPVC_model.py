@@ -20,10 +20,10 @@ class AppPVCModel(QObject):
         self.image_path_changed.emit(value)
 
     @property
-    def imgPath(self): 
+    def imgPath2(self): 
         return self.path2
     
-    def addImgPath(self, value):
+    def addImgPath2(self, value):
         self.path2 = value
         self.image_path_changed2.emit(value)
 

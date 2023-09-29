@@ -29,7 +29,7 @@ class AppPVCViewMain(QMainWindow):
         # y = (height - self.height()) / 2
         # self.move(x, y)
 
-        self.view.actionOpen.triggered.connect(self.controller.onOpen)
+        self.view.actionOpen.triggered.connect(lambda: self.controller.onOpen(1))
         self.view.actionSave_As.triggered.connect(
             lambda: self.controller.onSaveAs(self.view.label_2))
         self.view.actionExit.triggered.connect(self.controller.onExit)
@@ -62,15 +62,16 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionAritmatika.triggered.connect(
             self.show_middle_label)
 
-        self.model.image_result_changed.connect(self.on_image_result)
+        self.model.image_result_changed.connect(self.on_image_result)  
         self.model.image_path_changed.connect(self.on_image_change)
+        self.model.image_path_changed2.connect(self.on_image_change2)
 
         self.view.label_3.mousePressEvent = self.lable3Open
 
 
     def lable3Open(self, event):
         if event.button() == Qt.LeftButton:
-            self.controller.onOpen()
+            self.controller.onOpen(2)
    
 
     def sliderWindow(self, route):
