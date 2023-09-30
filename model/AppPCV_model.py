@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtGui import QPixmap
 
 
-class AppPVCModel(QObject):
+class AppPCVModel(QObject):
     
     image_path_changed = pyqtSignal(str)
     image_path_changed2 = pyqtSignal(str)

@@ -11,7 +11,7 @@ from PIL import Image
 from operasi_image.OperasiAritmatika import Ui_MainWindow
 
 
-class AppPVCController(QObject):
+class AppPCVController(QObject):
 
     def __init__(self, model):
         super().__init__()

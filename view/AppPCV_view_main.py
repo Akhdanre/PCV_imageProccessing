@@ -1,8 +1,16 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow,  QSlider, QVBoxLayout, QLabel, QMessageBox, QWidget
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QSlider,
+    QVBoxLayout,
+    QLabel,
+    QMessageBox,
+    QWidget,
+)
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot, Qt
-from view.AppPVC_view_ui import PVC_view
+from view.AppPCV_view_ui import PCV_view
 from PyQt5.QtWidgets import QDesktopWidget
 from view.floatingWidget import FloatingWidget
 import sys
@@ -10,12 +18,12 @@ import sys
 from view.slider_window import SliderWindow
 
 
-class AppPVCViewMain(QMainWindow):
+class AppPCVViewMain(QMainWindow):
     def __init__(self, model, controller):
         super().__init__()
         self.model = model
         self.controller = controller
-        self.view = PVC_view()
+        self.view = PCV_view()
         self.view.setupUi(self)
 
         screen = QDesktopWidget().screenGeometry()
@@ -23,13 +31,9 @@ class AppPVCViewMain(QMainWindow):
         x = (width - self.width()) / 2
         y = (height - self.height()) / 2
         self.move(x, y)
-        # screen = QDesktopWidget().screenGeometry()
-        # width, height = screen.width(), screen.height()
-        # x = (width - self.width()) / 2
-        # y = (height - self.height()) / 2
-        # self.move(x, y)
 
-        self.view.actionOpen.triggered.connect(lambda: self.controller.onOpen(1))
+        self.view.actionOpen.triggered.connect(
+            lambda: self.controller.onOpen(1))
         self.view.actionSave_As.triggered.connect(
             lambda: self.controller.onSaveAs(self.view.label_2))
         self.view.actionExit.triggered.connect(self.controller.onExit)
@@ -45,7 +49,6 @@ class AppPVCViewMain(QMainWindow):
 
         self.view.actionContrast.triggered.connect(
             lambda: self.sliderWindow("contrast"))
-
         self.view.actionBrightness.triggered.connect(
             lambda: self.sliderWindow("brightness"))
 
@@ -57,14 +60,11 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
-        # self.view.actionAritmatika.triggered.connect(
-        #     self.controller.onAritmatikaPage)
-        self.view.actionAritmatika.triggered.connect(
-            self.show_middle_label)
-
+        # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
+        self.view.actionSplit.triggered.connect(self.show_middle_label)
         self.view.actionArtBack.triggered.connect(self.hideMiddleLable)
 
-        self.model.image_result_changed.connect(self.on_image_result)  
+        self.model.image_result_changed.connect(self.on_image_result)
         self.model.image_path_changed.connect(self.on_image_change)
         self.model.image_path_changed2.connect(self.on_image_change2)
 
@@ -78,14 +78,14 @@ class AppPVCViewMain(QMainWindow):
     def lable3Open(self, event):
         if event.button() == Qt.LeftButton:
             self.controller.onOpen(2)
-   
-    
 
     def sliderWindow(self, route):
         sliderW = SliderWindow(self)
         sliderW.show()
         sliderW.button.clicked.connect(
-            lambda: self.controller.brightnessRoute(route, sliderW.slider.value()))
+            lambda: self.controller.brightnessRoute(
+                route, sliderW.slider.value())
+        )
 
     def show_middle_label(self):
         self.resize(1425, 518)
@@ -102,7 +102,6 @@ class AppPVCViewMain(QMainWindow):
         self.move(x_window, y_window)
         self.view.label_2.move(480, 20)
         self.view.label_3.hide()
-
 
     @pyqtSlot(str)
     def on_image_change(self, value):

@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class PVC_view(object):
+
+class PCV_view(object):
     def setupUi(self, Project1):
         Project1.setObjectName("Project1")
         Project1.resize(944, 518)
@@ -21,7 +22,6 @@ class PVC_view(object):
         self.label_3.setFrameShape(QtWidgets.QFrame.Box)
         self.label_3.setText("Click to pick image")
         self.label_3.setObjectName("label_3")
-        # self.label_3.hide()
         Project1.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Project1)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 944, 26))
@@ -45,7 +45,8 @@ class PVC_view(object):
         self.menuImage_Processing = QtWidgets.QMenu(self.menubar)
         self.menuImage_Processing.setObjectName("menuImage_Processing")
         self.menuAritmetical_Operation = QtWidgets.QMenu(self.menubar)
-        self.menuAritmetical_Operation.setObjectName("menuAritmetical_Operation")
+        self.menuAritmetical_Operation.setObjectName(
+            "menuAritmetical_Operation")
         self.menuFilter = QtWidgets.QMenu(self.menubar)
         self.menuFilter.setObjectName("menuFilter")
         self.menuEdge_Detection = QtWidgets.QMenu(self.menuFilter)
@@ -67,6 +68,8 @@ class PVC_view(object):
         self.menuGeometri = QtWidgets.QMenu(self.menubar)
         self.menuGeometri.setObjectName("menuGeometri")
         self.menuFlip = QtWidgets.QMenu(self.menuGeometri)
+        self.menuAritmatika = QtWidgets.QMenu(self.menuAritmetical_Operation)
+        self.menuAritmatika.setObjectName("menuAritmatika")
         Project1.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(Project1)
         self.statusbar.setObjectName("statusbar")
@@ -86,7 +89,8 @@ class PVC_view(object):
         self.actionInput_Output = QtWidgets.QAction(Project1)
         self.actionInput_Output.setObjectName("actionInput_Output")
         self.actionBrightness_Contrast = QtWidgets.QAction(Project1)
-        self.actionBrightness_Contrast.setObjectName("actionBrightness_Contrast")
+        self.actionBrightness_Contrast.setObjectName(
+            "actionBrightness_Contrast")
         self.actionInvers = QtWidgets.QAction(Project1)
         self.actionInvers.setObjectName("actionInvers")
         self.actionLog_Brightness = QtWidgets.QAction(Project1)
@@ -132,7 +136,8 @@ class PVC_view(object):
         self.action7_bit = QtWidgets.QAction(Project1)
         self.action7_bit.setObjectName("action7_bit")
         self.actionHistogram_Equalization = QtWidgets.QAction(Project1)
-        self.actionHistogram_Equalization.setObjectName("actionHistogram_Equalization")
+        self.actionHistogram_Equalization.setObjectName(
+            "actionHistogram_Equalization")
         self.actionFuzzy_HE_RGB = QtWidgets.QAction(Project1)
         self.actionFuzzy_HE_RGB.setObjectName("actionFuzzy_HE_RGB")
         self.actionFuzzy_Grayscale = QtWidgets.QAction(Project1)
@@ -256,12 +261,14 @@ class PVC_view(object):
         self.menubar.addAction(self.menuEdge_Detection_2.menuAction())
         self.menubar.addAction(self.menuMorfologi.menuAction())
         self.menubar.addAction(self.menuGeometri.menuAction())
-        self.actionAritmatika = QtWidgets.QAction(Project1)
-        self.actionAritmatika.setObjectName("actionAritmatika")
+        # self.actionAritmatika = QtWidgets.QAction(Project1)
+        # self.actionAritmatika.setObjectName("actionAritmatika")
+        self.actionSplit = QtWidgets.QAction(Project1)
+        self.actionSplit.setObjectName("actionSplit")
         self.actionArtBack = QtWidgets.QAction(Project1)
-        self.actionArtBack.setObjectName("actionAritmatika")
-        self.menuAritmetical_Operation.addAction(self.actionAritmatika)
-        self.menuAritmetical_Operation.addAction(self.actionArtBack)
+        self.actionArtBack.setObjectName("actionArtBack")
+        # self.menuAritmetical_Operation.addAction(self.menuAritmatika)
+
         self.actionVertikal = QtWidgets.QAction(Project1)
         self.actionVertikal.setObjectName("actionVertikal")
         self.actionHorizontal = QtWidgets.QAction(Project1)
@@ -273,6 +280,58 @@ class PVC_view(object):
         self.menuFlip.addAction(self.actionHorizontal)
         self.menuGeometri.addAction(self.menuFlip.menuAction())
         self.menuGeometri.addAction(self.actionCrop)
+
+        # self.menuLogika = QtWidgets.QAction(Project1)
+        # self.actionNOT.setObjectName("actionNOT")
+
+        self.menuLogika = QtWidgets.QMenu(self.menuAritmatika)
+        self.menuLogika.setObjectName("menuLogika")
+        self.actionOr = QtWidgets.QAction(Project1)
+        self.actionOr.setObjectName("ActionOr")
+        self.actionNot = QtWidgets.QAction(Project1)
+        self.actionNot.setObjectName("ActionNot")
+        self.actionAnd = QtWidgets.QAction(Project1)
+        self.actionAnd.setObjectName("ActionAnd")
+
+        self.menuLogika.addAction(self.actionAnd)
+        self.menuLogika.addAction(self.actionOr)
+        self.menuLogika.addAction(self.actionNot)
+
+        self.menuOperasi = QtWidgets.QMenu(self.menuAritmatika)
+        self.menuOperasi.setObjectName("menuOperasi")
+        self.actionPenjumlahan = QtWidgets.QAction(Project1)
+        self.actionPenjumlahan.setObjectName("ActionPenjumlahan")
+        self.actionPengurangan = QtWidgets.QAction(Project1)
+        self.actionPengurangan.setObjectName("ActionPengurangan")
+        self.actionPerkalian = QtWidgets.QAction(Project1)
+        self.actionPerkalian.setObjectName("ActionPerkalian")
+        self.actionPembagian = QtWidgets.QAction(Project1)
+        self.actionPembagian.setObjectName("ActionPembagian")
+        self.actionPenjumlahanSC = QtWidgets.QAction(Project1)
+        self.actionPenjumlahanSC.setObjectName("ActionPenjumlahanScalarC")
+        self.actionPenguranganSC = QtWidgets.QAction(Project1)
+        self.actionPenguranganSC.setObjectName("ActionPenguranganScalarC")
+        self.actionPerkalianSC = QtWidgets.QAction(Project1)
+        self.actionPerkalianSC.setObjectName("ActionPerkalianScalarC")
+        self.actionPembagianSC = QtWidgets.QAction(Project1)
+        self.actionPembagianSC.setObjectName("ActionPembagianScalarC")
+
+        self.menuOperasi.addAction(self.actionPenjumlahan)
+        self.menuOperasi.addAction(self.actionPengurangan)
+        self.menuOperasi.addAction(self.actionPerkalian)
+        self.menuOperasi.addAction(self.actionPembagian)
+        self.menuOperasi.addAction(self.actionPenjumlahanSC)
+        self.menuOperasi.addAction(self.actionPenguranganSC)
+        self.menuOperasi.addAction(self.actionPerkalianSC)
+        self.menuOperasi.addAction(self.actionPembagianSC)
+
+        self.menuAritmatika.addAction(self.menuLogika.menuAction())
+        self.menuAritmatika.addAction(self.menuOperasi.menuAction())
+        self.menuAritmetical_Operation.addAction(
+            self.menuAritmatika.menuAction())
+        self.menuAritmetical_Operation.addAction(self.actionSplit)
+        self.menuAritmetical_Operation.addAction(self.actionArtBack)
+
         self.retranslateUi(Project1)
         QtCore.QMetaObject.connectSlotsByName(Project1)
 
@@ -284,15 +343,22 @@ class PVC_view(object):
         self.menuHistogram.setTitle(_translate("Project1", "Histogram"))
         self.menuColors.setTitle(_translate("Project1", "Colors"))
         self.menuRGB.setTitle(_translate("Project1", "RGB"))
-        self.menuRGB_to_Graysclae.setTitle(_translate("Project1", "RGB to Graysclae"))
+        self.menuRGB_to_Graysclae.setTitle(
+            _translate("Project1", "RGB to Graysclae"))
         self.menuBrightness.setTitle(_translate("Project1", "Brightness"))
+        self.menuAritmatika.setTitle(_translate("Project1", "Aritmatika"))
         self.menuBit_Depth.setTitle(_translate("Project1", "Bit Depth"))
-        self.menuImage_Processing.setTitle(_translate("Project1", "Image Processing"))
-        self.menuAritmetical_Operation.setTitle(_translate("Project1", "Aritmetical Operation"))
+        self.menuImage_Processing.setTitle(
+            _translate("Project1", "Image Processing"))
+        self.menuAritmetical_Operation.setTitle(
+            _translate("Project1", "Aritmetical Operation"))
         self.menuFilter.setTitle(_translate("Project1", "Filter"))
-        self.menuEdge_Detection.setTitle(_translate("Project1", "Edge Detection"))
-        self.menuGaussian_Blur.setTitle(_translate("Project1", "Gaussian Blur"))
-        self.menuEdge_Detection_2.setTitle(_translate("Project1", "Edge Detection"))
+        self.menuEdge_Detection.setTitle(
+            _translate("Project1", "Edge Detection"))
+        self.menuGaussian_Blur.setTitle(
+            _translate("Project1", "Gaussian Blur"))
+        self.menuEdge_Detection_2.setTitle(
+            _translate("Project1", "Edge Detection"))
         self.menuMorfologi.setTitle(_translate("Project1", "Morfologi"))
         self.menuErosion.setTitle(_translate("Project1", "Erosion"))
         self.menuDilation.setTitle(_translate("Project1", "Dilation"))
@@ -306,10 +372,13 @@ class PVC_view(object):
         self.actionInput.setText(_translate("Project1", "Input"))
         self.actionOutput.setText(_translate("Project1", "Output"))
         self.actionInput_Output.setText(_translate("Project1", "Input Output"))
-        self.actionBrightness_Contrast.setText(_translate("Project1", "Brightness - Contrast"))
+        self.actionBrightness_Contrast.setText(
+            _translate("Project1", "Brightness - Contrast"))
         self.actionInvers.setText(_translate("Project1", "Invers"))
-        self.actionLog_Brightness.setText(_translate("Project1", "Log Brightness"))
-        self.actionGamma_Correction.setText(_translate("Project1", "Gamma Correction"))
+        self.actionLog_Brightness.setText(
+            _translate("Project1", "Log Brightness"))
+        self.actionGamma_Correction.setText(
+            _translate("Project1", "Gamma Correction"))
         self.actionKuning.setText(_translate("Project1", "Kuning"))
         self.actionOrange.setText(_translate("Project1", "Orange"))
         self.actionCyan.setText(_translate("Project1", "Cyan"))
@@ -329,21 +398,33 @@ class PVC_view(object):
         self.action5_bit.setText(_translate("Project1", "5 bit"))
         self.action6_bit.setText(_translate("Project1", "6 bit"))
         self.action7_bit.setText(_translate("Project1", "7 bit"))
-        self.actionHistogram_Equalization.setText(_translate("Project1", "Histogram Equalization"))
+        self.actionHistogram_Equalization.setText(
+            _translate("Project1", "Histogram Equalization"))
         self.actionFuzzy_HE_RGB.setText(_translate("Project1", "Fuzzy HE RGB"))
-        self.actionFuzzy_Grayscale.setText(_translate("Project1", "Fuzzy Grayscale"))
+        self.actionFuzzy_Grayscale.setText(
+            _translate("Project1", "Fuzzy Grayscale"))
         self.actionIDENTITY.setText(_translate("Project1", "Identity"))
         self.actionSharpen.setText(_translate("Project1", "Sharpen"))
-        self.actionUnsharp_Masking.setText(_translate("Project1", "Unsharp Masking"))
-        self.actionAerage_Filter.setText(_translate("Project1", "Average Filter"))
-        self.actionLow_Pass_Filter.setText(_translate("Project1", "Low Pass Filter"))
-        self.actionHigh_Pass_Filter.setText(_translate("Project1", "High Pass Filter"))
-        self.actionBandstop_Filter.setText(_translate("Project1", "Bandstop Filter"))
-        self.actionEdge_Detection_1.setText(_translate("Project1", "Edge Detection 1"))
-        self.actionEdge_Detection_2.setText(_translate("Project1", "Edge Detection 2"))
-        self.actionEdge_Detection_3.setText(_translate("Project1", "Edge Detection 3"))
-        self.actionGaussian_Blur_3x3.setText(_translate("Project1", "Gaussian Blur 3x3"))
-        self.actionGaussian_Blur_5x5.setText(_translate("Project1", "Gaussian Blur 5x5"))
+        self.actionUnsharp_Masking.setText(
+            _translate("Project1", "Unsharp Masking"))
+        self.actionAerage_Filter.setText(
+            _translate("Project1", "Average Filter"))
+        self.actionLow_Pass_Filter.setText(
+            _translate("Project1", "Low Pass Filter"))
+        self.actionHigh_Pass_Filter.setText(
+            _translate("Project1", "High Pass Filter"))
+        self.actionBandstop_Filter.setText(
+            _translate("Project1", "Bandstop Filter"))
+        self.actionEdge_Detection_1.setText(
+            _translate("Project1", "Edge Detection 1"))
+        self.actionEdge_Detection_2.setText(
+            _translate("Project1", "Edge Detection 2"))
+        self.actionEdge_Detection_3.setText(
+            _translate("Project1", "Edge Detection 3"))
+        self.actionGaussian_Blur_3x3.setText(
+            _translate("Project1", "Gaussian Blur 3x3"))
+        self.actionGaussian_Blur_5x5.setText(
+            _translate("Project1", "Gaussian Blur 5x5"))
         self.actionPrewitt.setText(_translate("Project1", "Prewitt"))
         self.actionSbbel.setText(_translate("Project1", "Sobel"))
         self.actionSquare_3.setText(_translate("Project1", "Square 3x3"))
@@ -354,11 +435,31 @@ class PVC_view(object):
         self.actionCross_4.setText(_translate("Project1", "Cross 4x4"))
         self.actionSquare_9.setText(_translate("Project1", "Square 9x9"))
         self.actionSquare_10.setText(_translate("Project1", "Square 10x10"))
-        self.actionAritmatika.setText(_translate("Project1", "Aritmatika"))
+        self.actionSplit.setText(_translate("Project1", "Split 3 Image"))
         self.actionArtBack.setText(_translate("Project1", "Back 2 slot Image"))
         self.actionVertikal.setText(_translate("Project1", "Vertikal"))
         self.actionHorizontal.setText(_translate("Project1", "Horizontal"))
         self.actionCrop.setText(_translate("Project1", "Crop"))
+        self.menuFlip.setTitle(_translate("Project1", "Flip"))
+        self.menuLogika.setTitle(_translate("Project1", "Logika"))
+        self.menuOperasi.setTitle(_translate("Project1", "Operasi"))
+
+        self.actionAnd.setText(_translate("Project1", "AND"))
+        self.actionOr.setText(_translate("Project1", "OR"))
+        self.actionNot.setText(_translate("Project1", "NOT"))
+
+        self.actionPenjumlahan.setText(_translate("Project1", "Penjumlahan"))
+        self.actionPengurangan.setText(_translate("Project1", "Pengurangan"))
+        self.actionPerkalian.setText(_translate("Project1", "Perkalian"))
+        self.actionPembagian.setText(_translate("Project1", "Pembagian"))
+        self.actionPenjumlahanSC.setText(
+            _translate("Project1", "Penjumlahan Skalar C"))
+        self.actionPenguranganSC.setText(
+            _translate("Project1", "Pengurangan Skalar C"))
+        self.actionPerkalianSC.setText(
+            _translate("Project1", "Perkalian Skalar C"))
+        self.actionPembagianSC.setText(
+            _translate("Project1", "Pembagian Skalar C"))
 
         # Label Text
         self.label.setText(_translate("Project1", "Click to pick image"))
@@ -366,5 +467,3 @@ class PVC_view(object):
         self.label_3.hide()
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
-        
-
