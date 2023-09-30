@@ -67,7 +67,11 @@ class AppPVCViewMain(QMainWindow):
         self.model.image_path_changed2.connect(self.on_image_change2)
 
         self.view.label_3.mousePressEvent = self.lable3Open
+        self.view.label.mousePressEvent = self.lableOpen
 
+    def lableOpen(self, event):
+        if event.button() == Qt.LeftButton:
+            self.controller.onOpen(1)
 
     def lable3Open(self, event):
         if event.button() == Qt.LeftButton:
