@@ -62,6 +62,8 @@ class AppPVCViewMain(QMainWindow):
         self.view.actionAritmatika.triggered.connect(
             self.show_middle_label)
 
+        self.view.actionArtBack.triggered.connect(self.hideMiddleLable)
+
         self.model.image_result_changed.connect(self.on_image_result)  
         self.model.image_path_changed.connect(self.on_image_change)
         self.model.image_path_changed2.connect(self.on_image_change2)
@@ -77,6 +79,7 @@ class AppPVCViewMain(QMainWindow):
         if event.button() == Qt.LeftButton:
             self.controller.onOpen(2)
    
+    
 
     def sliderWindow(self, route):
         sliderW = SliderWindow(self)
@@ -89,8 +92,17 @@ class AppPVCViewMain(QMainWindow):
         x_window = (QtWidgets.QDesktopWidget().width() - self.width()) / 2
         y_window = (QtWidgets.QDesktopWidget().height() - self.height()) / 2
         self.move(x_window, y_window)
-        self.view.label_2.setGeometry(950, 20, 451, 441)
+        self.view.label_2.move(950, 20)
         self.view.label_3.show()
+
+    def hideMiddleLable(self):
+        self.resize(944, 518)
+        x_window = (QtWidgets.QDesktopWidget().width() - self.width()) / 2
+        y_window = (QtWidgets.QDesktopWidget().height() - self.height()) / 2
+        self.move(x_window, y_window)
+        self.view.label_2.move(480, 20)
+        self.view.label_3.hide()
+
 
     @pyqtSlot(str)
     def on_image_change(self, value):

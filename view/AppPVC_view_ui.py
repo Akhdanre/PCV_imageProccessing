@@ -21,7 +21,7 @@ class PVC_view(object):
         self.label_3.setFrameShape(QtWidgets.QFrame.Box)
         self.label_3.setText("Click to pick image")
         self.label_3.setObjectName("label_3")
-        self.label_3.hide()
+        # self.label_3.hide()
         Project1.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Project1)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 944, 26))
@@ -258,7 +258,10 @@ class PVC_view(object):
         self.menubar.addAction(self.menuGeometri.menuAction())
         self.actionAritmatika = QtWidgets.QAction(Project1)
         self.actionAritmatika.setObjectName("actionAritmatika")
+        self.actionArtBack = QtWidgets.QAction(Project1)
+        self.actionArtBack.setObjectName("actionAritmatika")
         self.menuAritmetical_Operation.addAction(self.actionAritmatika)
+        self.menuAritmetical_Operation.addAction(self.actionArtBack)
         self.actionVertikal = QtWidgets.QAction(Project1)
         self.actionVertikal.setObjectName("actionVertikal")
         self.actionHorizontal = QtWidgets.QAction(Project1)
@@ -352,12 +355,16 @@ class PVC_view(object):
         self.actionSquare_9.setText(_translate("Project1", "Square 9x9"))
         self.actionSquare_10.setText(_translate("Project1", "Square 10x10"))
         self.actionAritmatika.setText(_translate("Project1", "Aritmatika"))
+        self.actionArtBack.setText(_translate("Project1", "Back 2 slot Image"))
         self.actionVertikal.setText(_translate("Project1", "Vertikal"))
         self.actionHorizontal.setText(_translate("Project1", "Horizontal"))
         self.actionCrop.setText(_translate("Project1", "Crop"))
 
         # Label Text
+        self.label.setText(_translate("Project1", "Click to pick image"))
         self.label_3.setText(_translate("Project1", "Click to pick image"))
         self.label_3.hide()
-
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        
 
