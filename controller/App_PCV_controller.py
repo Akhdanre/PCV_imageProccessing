@@ -284,3 +284,122 @@ class AppPCVController(QObject):
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+
+    # def operasiPenjumlahan(self):
+    #     imageP1 = self.model.imgPath
+    #     imageP2 = self.model.imgPath2
+
+    #     if imageP1 and imageP2:
+    #         image1 = mpimg.imread(imageP1)
+    #         image2 = mpimg.imread(imageP2)
+
+    #         height1, width1, channels1 = image1.shape
+    #         height2, width2, channels2 = image2.shape
+
+    #         arr1 = np.zeros((height1, width1, channels1), dtype=np.uint8)
+    #         # arr2 = np.zeros((height2, width2, channels2), dtype=np.uint8)
+
+    #         for i in range(height1):
+    #             for l in range(width1):
+    #                 rValue = image1[i, l, 0] + image2[i, l, 0]
+    #                 gValue = image1[i, l, 1] + image2[i, l, 1]
+    #                 bValue = image1[i, l, 2] + image2[i, l, 2]
+
+    #                 arr1[i, l, 0] = rValue if rValue <= 255.0 and rValue >= 0.0 else 0.0 if rValue < 0.0 else 255.0
+    #                 arr1[i, l, 1] = gValue if gValue <= 255.0 and gValue >= 0.0 else 0.0 if gValue < 0.0 else 255.0
+    #                 arr1[i, l, 2] = bValue if bValue <= 255.0 and bValue >= 0.0 else 0.0 if bValue < 0.0 else 255.0
+
+    #                 print(arr1[i, l, 0], arr1[i, l, 1], arr1[i, l, 2])
+
+    #         heightR, widthR, channelsR = arr1.shape
+    #         bytes_per_line = channelsR * width1
+    #         q_img = QImage(arr1.data, widthR, heightR,
+    #                        bytes_per_line, QImage.Format_RGB888)
+
+    #         pixmap = QPixmap.fromImage(q_img)
+    #         self.model.image_result_changed.emit(pixmap)
+
+    def operasiPenjumlahan(self):
+        imageP1 = self.model.imgPath
+        imageP2 = self.model.imgPath2
+
+        if imageP1 and imageP2:
+            image1 = mpimg.imread(imageP1)
+            image2 = mpimg.imread(imageP2)
+
+            if image1.shape == image2.shape:
+                result = np.clip(image1.astype(int) + image2.astype(int), 0, 255).astype(np.uint8)
+
+                heightR, widthR, channelsR = result.shape
+                bytes_per_line = channelsR * widthR
+                q_img = QImage(result.data, widthR, heightR,
+                            bytes_per_line, QImage.Format_RGB888)
+
+                pixmap = QPixmap.fromImage(q_img)
+                self.model.image_result_changed.emit(pixmap)
+            else:
+                print("Dimensi kedua gambar tidak cocok.")
+
+    def operasiPengurangan(self):
+        imageP1 = self.model.imgPath
+        imageP2 = self.model.imgPath2
+
+        if imageP1 and imageP2:
+            image1 = mpimg.imread(imageP1)
+            image2 = mpimg.imread(imageP2)
+
+            if image1.shape == image2.shape:
+                result = np.clip(image1.astype(int) - image2.astype(int), 0, 255).astype(np.uint8)
+
+                heightR, widthR, channelsR = result.shape
+                bytes_per_line = channelsR * widthR
+                q_img = QImage(result.data, widthR, heightR,
+                            bytes_per_line, QImage.Format_RGB888)
+
+                pixmap = QPixmap.fromImage(q_img)
+                self.model.image_result_changed.emit(pixmap)
+            else:
+                print("Dimensi kedua gambar tidak cocok.")
+    def operasiPerkalian(self):
+        imageP1 = self.model.imgPath
+        imageP2 = self.model.imgPath2
+
+        if imageP1 and imageP2:
+            image1 = mpimg.imread(imageP1)
+            image2 = mpimg.imread(imageP2)
+
+            if image1.shape == image2.shape:
+                result = np.clip(image1.astype(int) * image2.astype(int), 0, 255).astype(np.uint8)
+
+                heightR, widthR, channelsR = result.shape
+                bytes_per_line = channelsR * widthR
+                q_img = QImage(result.data, widthR, heightR,
+                            bytes_per_line, QImage.Format_RGB888)
+
+                pixmap = QPixmap.fromImage(q_img)
+                self.model.image_result_changed.emit(pixmap)
+            else:
+                print("Dimensi kedua gambar tidak cocok.")
+    def operasiPembagian(self):
+        imageP1 = self.model.imgPath
+        imageP2 = self.model.imgPath2
+
+        if imageP1 and imageP2:
+            image1 = mpimg.imread(imageP1)
+            image2 = mpimg.imread(imageP2)
+
+            if image1.shape == image2.shape:
+                result = np.clip(image1.astype(int) / image2.astype(int), 0, 255).astype(np.uint8)
+
+                heightR, widthR, channelsR = result.shape
+                bytes_per_line = channelsR * widthR
+                q_img = QImage(result.data, widthR, heightR,
+                            bytes_per_line, QImage.Format_RGB888)
+
+                pixmap = QPixmap.fromImage(q_img)
+                self.model.image_result_changed.emit(pixmap)
+            else:
+                print("Dimensi kedua gambar tidak cocok.")
+
+
+

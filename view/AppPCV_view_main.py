@@ -60,6 +60,15 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
 
+        self.view.actionPenjumlahan.triggered.connect(
+            self.controller.operasiPenjumlahan)
+
+        self.view.actionPengurangan.triggered.connect(
+            self.controller.operasiPengurangan)
+        
+        self.view.actionPerkalian.triggered.connect(self.controller.operasiPerkalian)
+        self.view.actionPembagian.triggered.connect(self.controller.operasiPembagian)
+
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
         self.view.actionArtBack.triggered.connect(self.hideMiddleLable)
