@@ -59,6 +59,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
+        
+        self.view.actionNot.triggered.connect(self.controller.operasiNot)
 
         self.view.actionPenjumlahan.triggered.connect(
             self.controller.operasiPenjumlahan)

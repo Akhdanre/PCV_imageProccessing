@@ -258,32 +258,55 @@ class AppPCVController(QObject):
         if image_path:
             image = mpimg.imread(image_path)
             height, width, channels = image.shape
-            value = np.zeros((height, width, channels), dtype=np.uint8)
+            # result = np.zeros((height, width, channels), dtype=np.uint8)
 
-            # c = 70
+            # result = image.copy()
+
+            # # c = 70
             f = 259 * (c + 255) / (255 * (259 - c))
 
-            for i in range(height):
-                for j in range(width):
-                    red = image[i, j, 0]
-                    green = image[i, j, 1]
-                    blue = image[i, j, 2]
+            image_float = image.astype(np.float32)
+            pixel = image_float - 128
+            contrasted_image = np.clip(f * pixel + 128, 0, 255).astype(np.uint8)
 
-                    rValue = f * (red - 128) + 128
-                    gValue = f * (green - 128) + 128
-                    bValue = f * (blue - 128) + 128
-
-                    value[i, j, 0] = rValue if rValue <= 255 and rValue >= 0 else 0 if rValue < 0 else 255
-                    value[i, j, 1] = gValue if gValue <= 255 and gValue >= 0 else 0 if gValue < 0 else 255
-                    value[i, j, 2] = bValue if bValue <= 255 and bValue >= 0 else 0 if bValue < 0 else 255
-
-            height1, width1, channels1 = value.shape
+            height1, width1, channels1 = contrasted_image.shape
             bytes_per_line = channels1 * width1
-            q_img = QImage(value.data, width1, height1,
+            q_img = QImage(contrasted_image.data, width1, height1,
                            bytes_per_line, QImage.Format_RGB888)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+
+            # for i in range(height):
+            #     for j in range(width):
+                    # red = image[i, j, 0]
+                    # green = image[i, j, 1]
+                    # blue = image[i, j, 2]
+
+                    # rValue = f * (red - 128) + 128
+                    # gValue = f * (green - 128) + 128
+                    # bValue = f * (blue - 128) + 128
+
+                    # value[i, j, 0] = rValue if rValue <= 255 and rValue >= 0 else 0 if rValue < 0 else 255
+                    # value[i, j, 1] = gValue if gValue <= 255 and gValue >= 0 else 0 if gValue < 0 else 255
+                    # value[i, j, 2] = bValue if bValue <= 255 and bValue >= 0 else 0 if bValue < 0 else 255
+
+                    # pixel = result[i, j]
+                    # result[i, j, 0] = np.clip(f * (pixel[0] - 128) + 128, 0, 255)
+                    # result[i, j, 1] = np.clip(f * (pixel[1] - 128) + 128, 0, 255)
+                    # result[i, j, 2] = np.clip(f * (pixel[2] - 128) + 128, 0, 255)
+
+
+            # value = np.clip(f * (image - 128) + 128, 0, 255).astype(np.uint8)
+
+            # height1, width1, channels1 = result.shape
+            # bytes_per_line = channels1 * width1
+            # q_img = QImage(result.data, width1, height1,
+            #                bytes_per_line, QImage.Format_RGB888)
+
+            # pixmap = QPixmap.fromImage(q_img)
+            # self.model.image_result_changed.emit(pixmap)
+
 
     # def operasiPenjumlahan(self):
     #     imageP1 = self.model.imgPath
@@ -360,6 +383,7 @@ class AppPCVController(QObject):
                 self.model.image_result_changed.emit(pixmap)
             else:
                 print("Dimensi kedua gambar tidak cocok.")
+
     def operasiPerkalian(self):
         imageP1 = self.model.imgPath
         imageP2 = self.model.imgPath2
@@ -380,6 +404,7 @@ class AppPCVController(QObject):
                 self.model.image_result_changed.emit(pixmap)
             else:
                 print("Dimensi kedua gambar tidak cocok.")
+
     def operasiPembagian(self):
         imageP1 = self.model.imgPath
         imageP2 = self.model.imgPath2
@@ -401,5 +426,19 @@ class AppPCVController(QObject):
             else:
                 print("Dimensi kedua gambar tidak cocok.")
 
+    def operasiNot(self):
+        imageP = self.model.imgPath
+        
+        if imageP: 
+            image = mpimg.imread(imageP)
+
+            result = np.clip( not image.all(), 0, 255).astype(np.uint8)
+            heightR, widthR, channelsR = result.shape
+            bytes_per_line = channelsR * widthR
+            q_img = QImage(result.data, widthR, heightR,
+                        bytes_per_line, QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
 
 

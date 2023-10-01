@@ -1,5 +1,4 @@
 from PyQt5 import QtCore, QtWidgets
-import sys
 
 
 class SliderWindow(QtWidgets.QMainWindow):
@@ -18,6 +17,3 @@ class SliderWindow(QtWidgets.QMainWindow):
 
         self.setCentralWidget(central_widget)
         self.setContentsMargins(20, 20, 20, 20)
-
-        # self.button.clicked.connect(
-        #     lambda: parent.controller.brightnessRoute(route, self.slider.value()))
