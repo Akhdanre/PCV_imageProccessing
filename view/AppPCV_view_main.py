@@ -96,6 +96,8 @@ class AppPCVViewMain(QMainWindow):
             lambda: self.controller.gaussianBlur(5))
         
 
+        self.view.actionFuzzy_Grayscale.triggered.connect(self.controller.fuzzyHistogram)
+
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
 
