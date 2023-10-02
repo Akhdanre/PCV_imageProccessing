@@ -244,7 +244,7 @@ class AppPCVController(QObject):
             #         value[i, j, 0] = rValue if rValue <= 255 and rValue >= 0 else 0 if rValue < 0 else 255
             #         value[i, j, 1] = gValue if gValue <= 255 and gValue >= 0 else 0 if gValue < 0 else 255
             #         value[i, j, 2] = bValue if bValue <= 255 and bValue >= 0 else 0 if bValue < 0 else 255
-            
+
             imageFloat = image.astype(np.float32)
             pixel = imageFloat + c
             value = np.clip(pixel, 0, 255).astype(np.uint8)
@@ -432,26 +432,33 @@ class AppPCVController(QObject):
 
     def operasiNot(self):
         imageP = self.model.imgPath
-        
+
         if imageP: 
             image = mpimg.imread(imageP)
+            if len(image.shape) == 3:
+                image = image[:, :, 0]
 
-            result = np.clip( not image.all(), 0, 255).astype(np.uint8)
-            heightR, widthR, channelsR = result.shape
-            bytes_per_line = channelsR * widthR
-            q_img = QImage(result.data, widthR, heightR,
-                        bytes_per_line, QImage.Format_RGB888)
+            image = (image * 255).astype(np.uint8)
+            value = np.bitwise_not(image)
 
+            heightR, widthR = value.shape
+            bytes_per_line = widthR
+            q_img = QImage(value.data, widthR, heightR,
+                        bytes_per_line, QImage.Format_Grayscale8)
+            
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
     def operasiAnd(self):
         imageP = self.model.imgPath
-        
-        if imageP: 
-            image = mpimg.imread(imageP)
+        imageP2 = self.model.imgPath2
 
-            result = np.clip( not image.all(), 0, 255).astype(np.uint8)
+        if imageP and imageP2:
+            image = mpimg.imread(imageP)
+            image2 = mpimg.imread(imageP2)
+
+            result = np.bitwise_and(image, image2).astype(np.uint8)
+
             heightR, widthR, channelsR = result.shape
             bytes_per_line = channelsR * widthR
             q_img = QImage(result.data, widthR, heightR,
@@ -459,21 +466,49 @@ class AppPCVController(QObject):
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+        else: 
+            print("tidak boleh kosong")
 
 
     def operasiXor(self):
-        imageP = self.model.imgPath
+        imageP1 = self.model.imgPath
+        imageP2 = self.model.imgPath2
         
-        if imageP: 
-            image = mpimg.imread(imageP)
+        if imageP1 and imageP2:
+            # Baca kedua citra
+            image1 = mpimg.imread(imageP1)
+            image2 = mpimg.imread(imageP2)
 
-            result = np.clip( not image.all(), 0, 255).astype(np.uint8)
-            heightR, widthR, channelsR = result.shape
-            bytes_per_line = channelsR * widthR
-            q_img = QImage(result.data, widthR, heightR,
-                        bytes_per_line, QImage.Format_RGB888)
+            # Pastikan kedua citra memiliki ukuran yang sama
+            if image1.shape == image2.shape:
+                # Lakukan operasi XOR pada kedua citra
+                result = np.bitwise_xor(image1, image2).astype(np.uint8)
 
-            pixmap = QPixmap.fromImage(q_img)
-            self.model.image_result_changed.emit(pixmap)
+                heightR, widthR, channelsR = result.shape
+                bytes_per_line = channelsR * widthR
+                q_img = QImage(result.data, widthR, heightR,
+                            bytes_per_line, QImage.Format_RGB888)
+
+                pixmap = QPixmap.fromImage(q_img)
+                self.model.image_result_changed.emit(pixmap)
+            else:
+                print("Ukuran kedua citra tidak sama")
+        else:
+            print("Path citra tidak valid")
+
+
+    def bitDepth(self, bit):
+        max_intensity = 2 ** bit - 1
+    
+        # Membuat citra dengan semua saluran warna memiliki nilai maksimum
+        result = np.full((256, 256, 3), max_intensity, dtype=np.uint8)
+
+        heightR, widthR, channelsR = result.shape
+        bytes_per_line = channelsR * widthR
+        q_img = QImage(result.data, widthR, heightR,
+                    bytes_per_line, QImage.Format_RGB888)
+
+        pixmap = QPixmap.fromImage(q_img)
+        self.model.image_result_changed.emit(pixmap)
 
 

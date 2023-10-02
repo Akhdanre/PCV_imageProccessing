@@ -61,6 +61,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.onFlipHorizontal)
         
         self.view.actionNot.triggered.connect(self.controller.operasiNot)
+        self.view.actionOr.triggered.connect(self.controller.operasiXor)
+        self.view.actionAnd.triggered.connect(self.controller.operasiAnd)
 
         self.view.actionPenjumlahan.triggered.connect(
             self.controller.operasiPenjumlahan)
@@ -127,3 +129,4 @@ class AppPCVViewMain(QMainWindow):
     @pyqtSlot(QPixmap)
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
+        self.view.label_2.setAlignment(Qt.AlignCenter)
