@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
-from PyQt5.QtGui import QPixmap, QImage, QColor, QImageReader
+from PyQt5.QtGui import QPixmap, QImage, QColor, QImageReader, qRgb
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -498,17 +498,253 @@ class AppPCVController(QObject):
 
 
     def bitDepth(self, bit):
-        max_intensity = 2 ** bit - 1
-    
-        # Membuat citra dengan semua saluran warna memiliki nilai maksimum
-        result = np.full((256, 256, 3), max_intensity, dtype=np.uint8)
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
 
-        heightR, widthR, channelsR = result.shape
-        bytes_per_line = channelsR * widthR
-        q_img = QImage(result.data, widthR, heightR,
-                    bytes_per_line, QImage.Format_RGB888)
+            height, width, _ = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+            threshold = 127
 
-        pixmap = QPixmap.fromImage(q_img)
-        self.model.image_result_changed.emit(pixmap)
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    # Convert RGB to grayscale using the formula (0.299*R + 0.587*G + 0.114*B)
+                    grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
+
+                    # Convert to 1-bit depth based on the threshold
+                    result[i, j] = 0 if grayscale < threshold else 255
+
+            height1, width1 = result.shape
+            bytes_per_line = (width1 + 7) // 8  # Calculate bytes per line for 1-bit depth
+            q_img = QImage(bytes(result.tobytes()), width1, height1, bytes_per_line, QImage.Format_Mono)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+    def bitDepth2(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+
+            height, width, _ = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+            threshold1 = 85  # Untuk 2-bit depth, Anda memerlukan tiga ambang batas
+            threshold2 = 170
+
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    # Convert RGB to grayscale using the formula (0.299*R + 0.587*G + 0.114*B)
+                    grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
+
+                    # Convert to 2-bit depth based on the thresholds
+                    if grayscale < threshold1:
+                        result[i, j] = 0  # Hitam
+                    elif grayscale < threshold2:
+                        result[i, j] = 1  # Abu-abu pertama
+                    else:
+                        result[i, j] = 2  # Abu-abu kedua
+
+            height1, width1 = result.shape
+            q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
+
+            # Buat tabel warna untuk kedalaman bit 2
+            color_table = [qRgb(0, 0, 0), qRgb(85, 85, 85), qRgb(170, 170, 170), qRgb(255, 255, 255)]
+            q_img.setColorTable(color_table)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
+    def bitDepth3(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+
+            height, width, _ = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+            threshold1 = 85  # Ambang batas untuk level 1
+            threshold2 = 170  # Ambang batas untuk level 2
+            threshold3 = 255  # Ambang batas untuk level 3
+
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    # Convert RGB to grayscale using the formula (0.299*R + 0.587*G + 0.114*B)
+                    grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
+
+                    # Convert to 3-bit depth based on the thresholds
+                    if grayscale < threshold1:
+                        result[i, j] = 0  # Level 0
+                    elif grayscale < threshold2:
+                        result[i, j] = 1  # Level 1
+                    elif grayscale < threshold3:
+                        result[i, j] = 2  # Level 2
+                    else:
+                        result[i, j] = 3  # Level 3
+
+            height1, width1 = result.shape
+            q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
+
+            # Buat tabel warna untuk kedalaman bit 3
+            color_table = [qRgb(0, 0, 0), qRgb(85, 85, 85), qRgb(170, 170, 170), qRgb(255, 255, 255)]
+            q_img.setColorTable(color_table)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
+    def bitDepth4(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+
+            height, width, _ = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+            threshold1 = 64  # Ambang batas untuk level 1
+            threshold2 = 128  # Ambang batas untuk level 2
+            threshold3 = 192  # Ambang batas untuk level 3
+            threshold4 = 255  # Ambang batas untuk level 4
+
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    # Convert RGB to grayscale using the formula (0.299*R + 0.587*G + 0.114*B)
+                    grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
+
+                    # Convert to 4-bit depth based on the thresholds
+                    if grayscale < threshold1:
+                        result[i, j] = 0  # Level 0
+                    elif grayscale < threshold2:
+                        result[i, j] = 1  # Level 1
+                    elif grayscale < threshold3:
+                        result[i, j] = 2  # Level 2
+                    elif grayscale < threshold4:
+                        result[i, j] = 3  # Level 3
+                    else:
+                        result[i, j] = 4  # Level 4
+
+            height1, width1 = result.shape
+            q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
+
+            # Buat tabel warna untuk kedalaman bit 4
+            color_table = [qRgb(0, 0, 0), qRgb(85, 85, 85), qRgb(170, 170, 170), qRgb(255, 255, 255)]
+            q_img.setColorTable(color_table)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+            
+
+    # def bitDepth4(self):
+    #     image_path = self.model.imgPath
+    #     if image_path:
+    #         image = mpimg.imread(image_path)
+
+    #         height, width, _ = image.shape
+    #         result = np.zeros((height, width), dtype=np.uint8)
+    #         threshold1 = 64  # Ambang batas untuk level 1
+    #         threshold2 = 128  # Ambang batas untuk level 2
+    #         threshold3 = 192  # Ambang batas untuk level 3
+    #         threshold4 = 255  # Ambang batas untuk level 4
+
+    #         for i in range(height):
+    #             for j in range(width):
+    #                 red = image[i, j, 0]
+    #                 green = image[i, j, 1]
+    #                 blue = image[i, j, 2]
+
+    #                 # Konversi RGB ke level abu-abu dengan formula sederhana
+    #                 grayscale = (red + green + blue) // 3
+
+    #                 # Convert to 4-bit depth based on the thresholds
+    #                 if grayscale < threshold1:
+    #                     result[i, j] = 0  # Level 0
+    #                 elif grayscale < threshold2:
+    #                     result[i, j] = 1  # Level 1
+    #                 elif grayscale < threshold3:
+    #                     result[i, j] = 2  # Level 2
+    #                 elif grayscale < threshold4:
+    #                     result[i, j] = 3  # Level 3
+
+    #         height1, width1 = result.shape
+    #         q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
+
+    #         # Buat tabel warna untuk kedalaman bit 4 dengan 16 warna RGB yang berbeda
+    #         color_table = [qRgb(i * 85, i * 85, i * 85) for i in range(4)]
+    #         q_img.setColorTable(color_table)
+
+    #         pixmap = QPixmap.fromImage(q_img)
+    #         self.model.image_result_changed.emit(pixmap)
+
+
+
+    def bitDepthAll(self, n_bits):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+
+            height, width, _ = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+            
+            # Define thresholds and color table based on the number of bits
+            if n_bits == 5:
+                thresholds = [51, 102, 153, 204, 255]
+                color_table = [
+                    qRgb(0, 0, 0), qRgb(51, 51, 51), qRgb(102, 102, 102),
+                    qRgb(153, 153, 153), qRgb(204, 204, 204)
+                ]
+            elif n_bits == 6:
+                thresholds = [42, 85, 128, 170, 213, 255]
+                color_table = [
+                    qRgb(0, 0, 0), qRgb(42, 42, 42), qRgb(85, 85, 85),
+                    qRgb(128, 128, 128), qRgb(170, 170, 170), qRgb(213, 213, 213)
+                ]
+            elif n_bits == 7:
+                thresholds = [36, 73, 109, 146, 182, 219, 255]
+                color_table = [
+                    qRgb(0, 0, 0), qRgb(36, 36, 36), qRgb(73, 73, 73),
+                    qRgb(109, 109, 109), qRgb(146, 146, 146), qRgb(182, 182, 182),
+                    qRgb(219, 219, 219)
+                ]
+            else:
+                raise ValueError("Unsupported number of bits")
+
+            for i in range(height):
+                for j in range(width):
+                    red = image[i, j, 0]
+                    green = image[i, j, 1]
+                    blue = image[i, j, 2]
+
+                    grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
+
+                    # Convert to n-bit depth based on the thresholds
+                    for k in range(n_bits):
+                        if grayscale < thresholds[k]:
+                            result[i, j] = k
+                            break
+
+            height1, width1 = result.shape
+            q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
+
+            # Set the color table
+            q_img.setColorTable(color_table)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
 
 
