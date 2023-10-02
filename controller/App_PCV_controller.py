@@ -1,3 +1,4 @@
+import math
 import sys
 from PyQt5.QtWidgets import QFileDialog, QWidget
 from PyQt5 import QtWidgets
@@ -729,8 +730,6 @@ class AppPCVController(QObject):
                     blue = image[i, j, 2]
 
                     grayscale = 0.299 * red + 0.587 * green + 0.114 * blue
-
-                    # Convert to n-bit depth based on the thresholds
                     for k in range(n_bits):
                         if grayscale < thresholds[k]:
                             result[i, j] = k
@@ -739,7 +738,6 @@ class AppPCVController(QObject):
             height1, width1 = result.shape
             q_img = QImage(result.data, width1, height1, width1, QImage.Format_Indexed8)
 
-            # Set the color table
             q_img.setColorTable(color_table)
 
             pixmap = QPixmap.fromImage(q_img)
@@ -775,10 +773,10 @@ class AppPCVController(QObject):
                     for c in range(image.shape[2]):
                         blurred_image[i, j, c] = np.sum(kernel * image_padded[i:i+kernel_size, j:j+kernel_size, c])
 
-            blurred_image = blurred_image.astype(np.uint8)  # Mengubah tipe data menjadi uint8
+            blurred_image = blurred_image.astype(np.uint8) 
 
-            height1, width1, _ = blurred_image.shape  # Perhatikan tiga dimensi (channel) pada gambar
-            color_table = []  # Inisialisasi tabel warna jika diperlukan
+            height1, width1, _ = blurred_image.shape  
+            color_table = []  
 
             q_img = QImage(blurred_image.data, width1, height1, blurred_image.strides[0], QImage.Format_RGB888)
 
@@ -793,7 +791,7 @@ class AppPCVController(QObject):
             Tx = int(Tx)
             Ty = int(Ty)
             height, width, _ = image.shape
-            result = np.zeros((height, width, 3), dtype=np.uint8)  # Perbaiki dimensi hasil
+            result = np.zeros((height, width, 3), dtype=np.uint8)  
 
             for y in range(height):
                 for x in range(width):
@@ -801,13 +799,32 @@ class AppPCVController(QObject):
                     y_new = y + Ty
 
                     if 0 <= x_new < width and 0 <= y_new < height:
-                        result[y_new, x_new, :] = image[y, x, :]  # Salin piksel yang terdampak pergeseran
+                        result[y_new, x_new, :] = image[y, x, :]  
                     else:
-                        result[y, x, :] = [0, 0, 0]  # Isi piksel yang tidak terdampak dengan hitam
+                        result[y, x, :] = [0, 0, 0] 
+            q_img = QImage(result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+    def rotasi(self, degree):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, _ = image.shape
+            result = np.zeros((height, width, 3), dtype=np.uint8)  
+            radians = math.radians(degree)  
+            for y in range(height):
+                for x in range(width):
+                    newX = int(x * math.cos(radians) - y * math.sin(radians))
+                    newY = int(x * math.sin(radians) + y * math.cos(radians))
+                    if 0 <= newX < width and 0 <= newY < height:
+                        result[y, x] = image[newY, newX]  
 
             q_img = QImage(result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+
+
 
 
 

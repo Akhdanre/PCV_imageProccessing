@@ -97,6 +97,7 @@ class AppPCVViewMain(QMainWindow):
         
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
+        self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
 
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
@@ -123,6 +124,12 @@ class AppPCVViewMain(QMainWindow):
         sliderW.button.clicked.connect(
             lambda: self.controller.brightnessRoute(
                 route, sliderW.slider.value())
+        )
+    def sliderwindowrotasi(self):
+        sliderW = SliderWindow(self)
+        sliderW.show()
+        sliderW.button.clicked.connect(
+            lambda: self.controller.rotasi(sliderW.slider.value())
         )
 
     def sliderWindowTranslasi(self):
