@@ -747,4 +747,67 @@ class AppPCVController(QObject):
 
 
 
+    def gaussianBlur(self, kernel_size):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+
+            
+            kernel = np.fromfunction(
+                lambda x, y: (1/ (2 * np.pi * (kernel_size**2))) *
+                            np.exp(- ((x - (kernel_size//2))**2 + (y - (kernel_size//2))**2) / (2 * (kernel_size**2))),
+                (kernel_size, kernel_size)
+            )
+            kernel /= np.sum(kernel)
+
+            """
+            hasil kernel untuk 3 x 3 
+            121
+            242
+            121
+            """
+
+            blurred_image = np.zeros_like(image, dtype=np.float32)
+            image_padded = np.pad(image, [(kernel_size//2, kernel_size//2), (kernel_size//2, kernel_size//2), (0, 0)], mode='constant')
+
+            for i in range(image.shape[0]):
+                for j in range(image.shape[1]):
+                    for c in range(image.shape[2]):
+                        blurred_image[i, j, c] = np.sum(kernel * image_padded[i:i+kernel_size, j:j+kernel_size, c])
+
+            blurred_image = blurred_image.astype(np.uint8)  # Mengubah tipe data menjadi uint8
+
+            height1, width1, _ = blurred_image.shape  # Perhatikan tiga dimensi (channel) pada gambar
+            color_table = []  # Inisialisasi tabel warna jika diperlukan
+
+            q_img = QImage(blurred_image.data, width1, height1, blurred_image.strides[0], QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
+    def translasi(self, Tx, Ty):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            Tx = int(Tx)
+            Ty = int(Ty)
+            height, width, _ = image.shape
+            result = np.zeros((height, width, 3), dtype=np.uint8)  # Perbaiki dimensi hasil
+
+            for y in range(height):
+                for x in range(width):
+                    x_new = x + Tx
+                    y_new = y + Ty
+
+                    if 0 <= x_new < width and 0 <= y_new < height:
+                        result[y_new, x_new, :] = image[y, x, :]  # Salin piksel yang terdampak pergeseran
+                    else:
+                        result[y, x, :] = [0, 0, 0]  # Isi piksel yang tidak terdampak dengan hitam
+
+            q_img = QImage(result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
 

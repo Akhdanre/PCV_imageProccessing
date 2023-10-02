@@ -10,12 +10,14 @@ from PyQt5.QtWidgets import (
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import pyqtSlot, Qt
+from view import slider_windowTranslasi
 from view.AppPCV_view_ui import PCV_view
 from PyQt5.QtWidgets import QDesktopWidget
 from view.floatingWidget import FloatingWidget
 import sys
 
 from view.slider_window import SliderWindow
+from view.slider_windowTranslasi import SliderWindowTranslasi
 
 
 class AppPCVViewMain(QMainWindow):
@@ -59,24 +61,42 @@ class AppPCVViewMain(QMainWindow):
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
-        
+
         self.view.actionNot.triggered.connect(self.controller.operasiNot)
         self.view.actionOr.triggered.connect(self.controller.operasiXor)
         self.view.actionAnd.triggered.connect(self.controller.operasiAnd)
 
-        self.view.actionPenjumlahan.triggered.connect(self.controller.operasiPenjumlahan)
-        self.view.actionPengurangan.triggered.connect(self.controller.operasiPengurangan)
-        self.view.actionPerkalian.triggered.connect(self.controller.operasiPerkalian)
-        self.view.actionPembagian.triggered.connect(self.controller.operasiPembagian)
+        self.view.actionPenjumlahan.triggered.connect(
+            self.controller.operasiPenjumlahan)
+        self.view.actionPengurangan.triggered.connect(
+            self.controller.operasiPengurangan)
+        self.view.actionPerkalian.triggered.connect(
+            self.controller.operasiPerkalian)
+        self.view.actionPembagian.triggered.connect(
+            self.controller.operasiPembagian)
 
+        self.view.action1_bit.triggered.connect(
+            lambda: self.controller.bitDepth(1))
+        self.view.action2_bit.triggered.connect(
+            lambda: self.controller.bitDepth2())
+        self.view.action2_bit_2.triggered.connect(
+            lambda: self.controller.bitDepth3())
+        self.view.action4_bit.triggered.connect(
+            lambda: self.controller.bitDepth4())
+        self.view.action5_bit.triggered.connect(
+            lambda: self.controller.bitDepthAll(5))
+        self.view.action6_bit.triggered.connect(
+            lambda: self.controller.bitDepthAll(6))
+        self.view.action7_bit.triggered.connect(
+            lambda: self.controller.bitDepthAll(7))
 
-        self.view.action1_bit.triggered.connect(lambda: self.controller.bitDepth(1))
-        self.view.action2_bit.triggered.connect(lambda: self.controller.bitDepth2())
-        self.view.action2_bit_2.triggered.connect(lambda: self.controller.bitDepth3())
-        self.view.action4_bit.triggered.connect(lambda: self.controller.bitDepth4())
-        self.view.action5_bit.triggered.connect(lambda: self.controller.bitDepthAll(5))
-        self.view.action6_bit.triggered.connect(lambda: self.controller.bitDepthAll(6))
-        self.view.action7_bit.triggered.connect(lambda: self.controller.bitDepthAll(7))
+        self.view.actionGaussian_Blur_3x3.triggered.connect(
+            lambda: self.controller.gaussianBlur(3))
+        self.view.actionGaussian_Blur_5x5.triggered.connect(
+            lambda: self.controller.gaussianBlur(5))
+        
+
+        self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
 
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
@@ -103,6 +123,14 @@ class AppPCVViewMain(QMainWindow):
         sliderW.button.clicked.connect(
             lambda: self.controller.brightnessRoute(
                 route, sliderW.slider.value())
+        )
+
+    def sliderWindowTranslasi(self):
+        sliderW = SliderWindowTranslasi(self)
+        sliderW.show()
+        sliderW.button.clicked.connect(
+            lambda: self.controller.translasi(
+                sliderW.slider_x.value(), sliderW.slider_y.value())
         )
 
     def show_middle_label(self):
