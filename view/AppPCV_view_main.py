@@ -113,6 +113,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.indetityFilter)
         self.view.actionSharpen.triggered.connect(
             self.controller.sharpenFilter)
+        self.view.actionUnsharp_Masking.triggered.connect(
+            self.controller.unsharpMaskFilter)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)

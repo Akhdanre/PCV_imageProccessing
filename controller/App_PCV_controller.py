@@ -1164,6 +1164,33 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
+    def unsharpMaskFilter(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            result = np.zeros((height, width, channels), dtype=np.uint8)
+
+            kernel = np.array([[1, 4, 6, 4, 1], [4, 16, 24, 16, 4], [6, 24, 36, 24, 6], [4, 16, 24, 16, 4], [1, 4, 6, 4, 1]])
+            m, n = kernel.shape
+            border = m // 2 # berfungsi untuk menjaga agar kernel tidak keluar 
+            for c in range(channels):
+                for i in range(border, height - border):
+                    for j in range(border, width - border):
+                        total = 0
+                        for x in range(m):
+                            for y in range(n):
+                                total += image[i - border + x, j - border + y, c] * kernel[x, y]
+                        result[i, j, c] = np.clip(total // 256, 0, 255)
+
+            heightR, widthR, channelsR = result.shape
+            bytes_per_line = channelsR * widthR
+            q_img = QImage(result.data, widthR, heightR, bytes_per_line, QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
     def sobel(self):
         image_path = self.model.imgPath
         if image_path:
@@ -1257,3 +1284,5 @@ class AppPCVController(QObject):
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+
+            
