@@ -1100,4 +1100,37 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)  
 
+    def sobel(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+
+            kernel = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])  # Kernel yang dimodifikasi
+
+            # m, n = kernel.shape
+            kernel = np.rot90(kernel, 2)  # Memutar kernel 180 derajat
+
+            for i in range(height):
+                if i + 2 >= height:
+                    break
+                for j in range(width):
+                    if j + 2 >= width:
+                        break
+                    total = 0
+                    for m_idx in range(3):
+                        for n_idx in range(3):
+                            total += (self.grayscaleValue(image[i + m_idx, j + n_idx]) * kernel[m_idx, n_idx])
+                    result[i + 1, j + 1] = np.clip(total, 0, 255)
+
+            heightR, widthR = result.shape
+            bytes_per_line = widthR
+            q_img = QImage(result.data, widthR, heightR,
+                        bytes_per_line, QImage.Format_Grayscale8)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
     
