@@ -105,6 +105,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.highPass)
         self.view.actionSbbel.triggered.connect(
             self.controller.sobel)
+        self.view.actionPrewitt.triggered.connect(
+            self.controller.prewit)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
