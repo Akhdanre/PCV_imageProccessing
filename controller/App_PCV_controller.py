@@ -727,21 +727,25 @@ class AppPCVController(QObject):
         image_path = self.model.imgPath
         if image_path:
             image = mpimg.imread(image_path)
-            height, width, chanels = image.shape
-            faktorScaling = 2
+            height, width, channels = image.shape
+            faktorScaling = 1.5
 
-            w = width * faktorScaling
-            h = height * faktorScaling
+            w = int(width * faktorScaling)
+            h = int(height * faktorScaling)
 
-            result = np.zeros((h, w), dtype=np.uint8)
+            result = np.zeros((h, w, channels), dtype=np.uint8)
 
-            for i in range(h)-1:
-                for j in range(w) -1:
-                    xOld = h / faktorScaling
-                    yOld = w / faktorScaling
+            for i in range(h):
+                for j in range(w):
+                    xOld = i / faktorScaling
+                    yOld = j / faktorScaling
 
-                    result[xOld, yOld] = image[round(height), round(width)]
-                
+                    xNearest = int(round(xOld))
+                    yNearest = int(round(yOld))
+
+                    if xNearest < height and yNearest < width:
+                        result[i, j] = image[xNearest, yNearest]
+
             q_img = QImage(
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_img)
