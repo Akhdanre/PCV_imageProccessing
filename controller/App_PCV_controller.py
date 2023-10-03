@@ -1033,7 +1033,7 @@ class AppPCVController(QObject):
         plt.show()
 
     def grayscaleValue(self, arr):
-        value = (0.299 * arr[0]) + (0.587 * arr[ 1]) + (0.144 * arr[2])
+        value = (0.299 * arr[0]) + (0.587 * arr[1]) + (0.144 * arr[2])
         return value
 
     def lowPass(self):
@@ -1044,9 +1044,10 @@ class AppPCVController(QObject):
             result = np.zeros((height, width), dtype=np.uint8)
 
             # kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
-            kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
+            kernel = np.array(
+                [[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
             # kernel = np.array([[1/9, 1/9, 1/9], [1/9, 1/9, 1/9], [1/9, 1/9, 1/9]])
-            m,n = kernel.shape
+            m, n = kernel.shape
             for i in range(height):
                 if i + 2 >= height:
                     break
@@ -1056,9 +1057,11 @@ class AppPCVController(QObject):
                     total = 0
                     for m in range(3):
                         for n in range(3):
-                            total = total + (self.grayscaleValue(image[i+m, j+n]) * kernel[m, n])
-                    result[i+1, j+1] = np.clip(total/np.sum(kernel), 0, 255) # np.clip(total, 0, 255)     
-                     
+                            total = total + \
+                                (self.grayscaleValue(
+                                    image[i+m, j+n]) * kernel[m, n])
+                    # np.clip(total, 0, 255)
+                    result[i+1, j+1] = np.clip(total/np.sum(kernel), 0, 255)
 
             heightR, widthR = result.shape
             bytes_per_line = widthR
@@ -1066,7 +1069,7 @@ class AppPCVController(QObject):
                            bytes_per_line, QImage.Format_Grayscale8)
 
             pixmap = QPixmap.fromImage(q_img)
-            self.model.image_result_changed.emit(pixmap)  
+            self.model.image_result_changed.emit(pixmap)
 
     def highPass(self):
         image_path = self.model.imgPath
@@ -1077,8 +1080,8 @@ class AppPCVController(QObject):
 
             # kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
             # kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
-            kernel = np.array([[-1, -1, -1], [-1 , 9, -1], [-1, -1, -1]])
-            m,n = kernel.shape
+            kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+            m, n = kernel.shape
             for i in range(height):
                 if i + 2 >= height:
                     break
@@ -1088,9 +1091,10 @@ class AppPCVController(QObject):
                     total = 0
                     for m in range(3):
                         for n in range(3):
-                            total = total + (self.grayscaleValue(image[i+m, j+n]) * kernel[m, n])
-                    result[i+1, j+1] =  np.clip(total/np.sum(kernel), 0, 255)     
-                    
+                            total = total + \
+                                (self.grayscaleValue(
+                                    image[i+m, j+n]) * kernel[m, n])
+                    result[i+1, j+1] = np.clip(total/np.sum(kernel), 0, 255)
 
             heightR, widthR = result.shape
             bytes_per_line = widthR
@@ -1098,7 +1102,37 @@ class AppPCVController(QObject):
                            bytes_per_line, QImage.Format_Grayscale8)
 
             pixmap = QPixmap.fromImage(q_img)
-            self.model.image_result_changed.emit(pixmap)  
+            self.model.image_result_changed.emit(pixmap)
+
+    def indetityFilter(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            result = np.zeros((height, width, channels), dtype=np.uint8)
+
+            kernel = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+            m, n = kernel.shape
+            for c in range(channels):  # Loop through each channel (Red, Green, Blue)
+                for i in range(height):
+                    if i + 2 >= height:
+                        break
+                    for j in range(width):
+                        if j + 2 >= width:
+                            break
+                        total = 0
+                        for m in range(3):
+                            for n in range(3):
+                                total += image[i + m, j + n, c] * kernel[m, n]
+                        result[i + 1, j + 1, c] = np.clip(total, 0, 255)
+
+            heightR, widthR, channelsR = result.shape
+            bytes_per_line = widthR
+            q_img = QImage(result.data, widthR, heightR,
+                           3 * bytes_per_line, QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
 
     def sobel(self):
         image_path = self.model.imgPath
@@ -1107,9 +1141,8 @@ class AppPCVController(QObject):
             height, width, channels = image.shape
             result = np.zeros((height, width), dtype=np.uint8)
 
-            kernel = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])  # Kernel yang dimodifikasi
+            kernel = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
 
-            # m, n = kernel.shape
             kernel = np.rot90(kernel, 2)  # Memutar kernel 180 derajat
 
             for i in range(height):
@@ -1121,13 +1154,14 @@ class AppPCVController(QObject):
                     total = 0
                     for m_idx in range(3):
                         for n_idx in range(3):
-                            total += (self.grayscaleValue(image[i + m_idx, j + n_idx]) * kernel[m_idx, n_idx])
+                            total += (self.grayscaleValue(
+                                image[i + m_idx, j + n_idx]) * kernel[m_idx, n_idx])
                     result[i + 1, j + 1] = np.clip(total, 0, 255)
 
             heightR, widthR = result.shape
             bytes_per_line = widthR
             q_img = QImage(result.data, widthR, heightR,
-                        bytes_per_line, QImage.Format_Grayscale8)
+                           bytes_per_line, QImage.Format_Grayscale8)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
@@ -1139,9 +1173,8 @@ class AppPCVController(QObject):
             height, width, channels = image.shape
             result = np.zeros((height, width), dtype=np.uint8)
 
-            kernel = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])  # Kernel yang dimodifikasi
+            kernel = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
 
-            # m, n = kernel.shape
             kernel = np.rot90(kernel, 2)  # Memutar kernel 180 derajat
 
             for i in range(height):
@@ -1153,13 +1186,14 @@ class AppPCVController(QObject):
                     total = 0
                     for m_idx in range(3):
                         for n_idx in range(3):
-                            total += (self.grayscaleValue(image[i + m_idx, j + n_idx]) * kernel[m_idx, n_idx])
+                            total += (self.grayscaleValue(
+                                image[i + m_idx, j + n_idx]) * kernel[m_idx, n_idx])
                     result[i + 1, j + 1] = np.clip(total, 0, 255)
 
             heightR, widthR = result.shape
             bytes_per_line = widthR
             q_img = QImage(result.data, widthR, heightR,
-                        bytes_per_line, QImage.Format_Grayscale8)
+                           bytes_per_line, QImage.Format_Grayscale8)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
@@ -1171,7 +1205,7 @@ class AppPCVController(QObject):
             height, width, channels = image.shape
             result = np.zeros((height, width), dtype=np.uint8)
 
-            kernel = np.array([[-1, 0], [0, 1]])  
+            kernel = np.array([[-1, 0], [0, 1]])
 
             for i in range(height):
                 if i + 1 >= height:
@@ -1182,17 +1216,14 @@ class AppPCVController(QObject):
                     total = 0
                     for m in range(2):
                         for n in range(2):
-                            total += (self.grayscaleValue(image[i + m, j + n]) * kernel[m, n])
+                            total += (self.grayscaleValue(
+                                image[i + m, j + n]) * kernel[m, n])
                     result[i, j] = np.clip(total, 0, 255)
 
             heightR, widthR = result.shape
             bytes_per_line = widthR
             q_img = QImage(result.data, widthR, heightR,
-                        bytes_per_line, QImage.Format_Grayscale8)
+                           bytes_per_line, QImage.Format_Grayscale8)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
-
-
-
-    

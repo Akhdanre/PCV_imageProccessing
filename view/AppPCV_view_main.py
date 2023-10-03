@@ -109,6 +109,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.prewit)
         self.view.actionRobert.triggered.connect(
             self.controller.edgeDetectionRobert)
+        self.view.actionIDENTITY.triggered.connect(
+            self.controller.indetityFilter)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
