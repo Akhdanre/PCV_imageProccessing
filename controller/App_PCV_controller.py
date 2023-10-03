@@ -1164,5 +1164,35 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
+    def edgeDetectionRobert(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+
+            kernel = np.array([[-1, 0], [0, 1]])  
+
+            for i in range(height):
+                if i + 1 >= height:
+                    break
+                for j in range(width):
+                    if j + 1 >= width:
+                        break
+                    total = 0
+                    for m in range(2):
+                        for n in range(2):
+                            total += (self.grayscaleValue(image[i + m, j + n]) * kernel[m, n])
+                    result[i, j] = np.clip(total, 0, 255)
+
+            heightR, widthR = result.shape
+            bytes_per_line = widthR
+            q_img = QImage(result.data, widthR, heightR,
+                        bytes_per_line, QImage.Format_Grayscale8)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
 
     
