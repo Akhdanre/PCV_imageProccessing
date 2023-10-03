@@ -97,6 +97,7 @@ class AppPCVViewMain(QMainWindow):
             lambda: self.controller.gaussianBlur(3))
         self.view.actionGaussian_Blur_5x5.triggered.connect(
             lambda: self.controller.gaussianBlur(5))
+        self.view.actionLow_Pass_Filter.triggered.connect(self.controller.lowPass)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
