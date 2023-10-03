@@ -1031,7 +1031,7 @@ class AppPCVController(QObject):
         plt.title("Histogram Setelah")
 
         plt.show()
-        
+
     def grayscaleValue(self, arr):
         value = (0.299 * arr[0]) + (0.587 * arr[ 1]) + (0.144 * arr[2])
         return value
@@ -1044,8 +1044,8 @@ class AppPCVController(QObject):
             result = np.zeros((height, width), dtype=np.uint8)
 
             # kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
-            # kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
-            kernel = np.array([[1/9, 1/9, 1/9], [1/9, 1/9, 1/9], [1/9, 1/9, 1/9]])
+            kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
+            # kernel = np.array([[1/9, 1/9, 1/9], [1/9, 1/9, 1/9], [1/9, 1/9, 1/9]])
             m,n = kernel.shape
             for i in range(height):
                 if i + 2 >= height:
@@ -1057,9 +1057,40 @@ class AppPCVController(QObject):
                     for m in range(3):
                         for n in range(3):
                             total = total + (self.grayscaleValue(image[i+m, j+n]) * kernel[m, n])
-                            print(kernel[m, n])
-                    result[i+1, j+1] = min(max(int(total), 0), 255) # np.clip(total, 0, 255)     
+                    result[i+1, j+1] = np.clip(total/np.sum(kernel), 0, 255) # np.clip(total, 0, 255)     
                      
+
+            heightR, widthR = result.shape
+            bytes_per_line = widthR
+            q_img = QImage(result.data, widthR, heightR,
+                           bytes_per_line, QImage.Format_Grayscale8)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)  
+
+    def highPass(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            result = np.zeros((height, width), dtype=np.uint8)
+
+            # kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+            # kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
+            kernel = np.array([[-1, -1, -1], [-1 , 9, -1], [-1, -1, -1]])
+            m,n = kernel.shape
+            for i in range(height):
+                if i + 2 >= height:
+                    break
+                for j in range(width):
+                    if j + 2 >= width:
+                        break
+                    total = 0
+                    for m in range(3):
+                        for n in range(3):
+                            total = total + (self.grayscaleValue(image[i+m, j+n]) * kernel[m, n])
+                    result[i+1, j+1] =  np.clip(total/np.sum(kernel), 0, 255)     
+                    
 
             heightR, widthR = result.shape
             bytes_per_line = widthR

@@ -61,9 +61,11 @@ class AppPCVViewMain(QMainWindow):
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
-        
-        self.view.actionScallingUni.triggered.connect(self.controller.scalingUniform)
-        self.view.actionScallingNonUni.triggered.connect(self.controller.scalingNonUniform)
+
+        self.view.actionScallingUni.triggered.connect(
+            self.controller.scalingUniform)
+        self.view.actionScallingNonUni.triggered.connect(
+            self.controller.scalingNonUniform)
 
         self.view.actionNot.triggered.connect(self.controller.operasiNot)
         self.view.actionOr.triggered.connect(self.controller.operasiXor)
@@ -97,7 +99,10 @@ class AppPCVViewMain(QMainWindow):
             lambda: self.controller.gaussianBlur(3))
         self.view.actionGaussian_Blur_5x5.triggered.connect(
             lambda: self.controller.gaussianBlur(5))
-        self.view.actionLow_Pass_Filter.triggered.connect(self.controller.lowPass)
+        self.view.actionLow_Pass_Filter.triggered.connect(
+            self.controller.lowPass)
+        self.view.actionHigh_Pass_Filter.triggered.connect(
+            self.controller.highPass)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
@@ -106,8 +111,8 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionInput.triggered.connect(self.controller.histogramInput)
         self.view.actionOutput.triggered.connect(
             self.controller.histogramOutput)
-        self.view.actionInput_Output.triggered.connect(self.controller.histogramInputOutput)
-        
+        self.view.actionInput_Output.triggered.connect(
+            self.controller.histogramInputOutput)
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
@@ -174,6 +179,7 @@ class AppPCVViewMain(QMainWindow):
     def on_image_change(self, value):
         pixmap = QPixmap(value)
         self.view.label.setPixmap(pixmap)
+        self.view.label.setScaledContents(True)
 
     @pyqtSlot(str)
     def on_image_change2(self, value):
@@ -184,3 +190,4 @@ class AppPCVViewMain(QMainWindow):
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
         self.view.label_2.setAlignment(Qt.AlignCenter)
+        self.view.label_2.setScaledContents(True)
