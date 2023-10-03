@@ -61,6 +61,8 @@ class AppPCVViewMain(QMainWindow):
             self.controller.onFlipVertical)
         self.view.actionHorizontal.triggered.connect(
             self.controller.onFlipHorizontal)
+        
+        self.view.actionScallingUni.triggered.connect(self.controller.scalingUniform)
 
         self.view.actionNot.triggered.connect(self.controller.operasiNot)
         self.view.actionOr.triggered.connect(self.controller.operasiXor)
