@@ -834,10 +834,17 @@ class AppPCVController(QObject):
                         fuzzy2 = -(value - grey["c"])/(grey["c"] - light["a"])
                         gray[i, j] = self.defuzification(
                             fuzzy1, "light", fuzzy2, "grey")
+                    elif value < 63:
+                        fuzzy1 = value / dark["b"]
+                        gray[i, j] = self.defuzification(
+                            fuzzy1, "dark")
+                    elif value > 191:
+                        fuzzy1 = (value - light["b"]) / (255 - light["b"])
+                        gray[i, j] = self.defuzification(
+                            fuzzy1, "light")
                     else:
                         gray[i, j] = value
 
-           # Hitung histogram sebelum dan sesudah transformasi fuzzy
             hist_before = np.histogram(
                 image.ravel(), bins=256, range=(0, 256))[0]
             hist_after = np.histogram(
@@ -864,8 +871,71 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
-    def defuzification(self, fuzzy1, fuzzy1Role, fuzzy2, fuzzy2Role):
+    def fuzzyHistogramRGB(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            gray = np.zeros((height, width, channels), dtype=np.uint8)
+            dark = {"a": 0, "b": 63, "c": 127}
+            grey = {"a": 63, "b": 127, "c": 191}
+            light = {"a": 127, "b": 191, "c": 255}
+
+            for i in range(height):
+                for j in range(width):
+                    for l in range(channels):
+                        value = image[i, j, l]
+                        fuzzy1 = None
+                        fuzzy2 = None
+                        if 63 <= value <= 127:
+                            fuzzy1 = (value - grey["a"]) / \
+                                (grey["b"] - grey["a"])
+                            fuzzy2 = -(value - dark["a"]) / \
+                                (dark["a"] - dark["b"])
+                            gray[i, j, l] = self.defuzification(
+                                fuzzy1, "grey", fuzzy2, "dark")
+                        elif 128 < value < 191:
+                            fuzzy1 = (value - grey["b"]) / \
+                                (grey["c"] - grey["b"])
+                            fuzzy2 = -(value - grey["c"]) / \
+                                (grey["c"] - light["a"])
+                            gray[i, j, l] = self.defuzification(
+                                fuzzy1, "light", fuzzy2, "grey")
+                        elif value < 63:
+                            fuzzy1 = value / dark["b"]
+                            gray[i, j, l] = self.defuzification(
+                                fuzzy1, "dark")
+                        elif value > 191:
+                            fuzzy1 = (value - light["b"]) / \
+                                (light["c"] - light["b"])
+                            gray[i, j, l] = self.defuzification(
+                                fuzzy1, "light")
+                        else:
+                            gray[i, j, l] = value
+                    print(gray[i, j])
+
+            hist_before = np.histogram(
+                image.ravel(), bins=256, range=(0, 256))[0]
+            hist_after = np.histogram(
+                gray.ravel(), bins=256, range=(0, 256))[0]
+
+            self.model.setHistogramBefore(hist_before)
+            self.model.setHistogramAfter(hist_after)
+
+            q_img = QImage(
+                gray.data, gray.shape[1], gray.shape[0], gray.strides[0], QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+    def defuzification(self, fuzzy1, fuzzy1Role, fuzzy2=None, fuzzy2Role=None):
         role = {"dark": 0, "grey": 127, "light": 255}
+        if fuzzy1Role == "dark" and fuzzy2 == None and fuzzy2Role == None:
+            v0 = fuzzy1 * role[fuzzy1Role]
+            return v0
+        elif fuzzy1Role == "light" and fuzzy2 == None and fuzzy2Role == None:
+            v0 = (fuzzy1 * role[fuzzy1Role])/fuzzy1
+            return v0 if v0 <= 255 else 255.0
         v0 = (fuzzy1 * role[fuzzy1Role] + fuzzy2 *
               role[fuzzy2Role])/(fuzzy1 + fuzzy2)
         return v0

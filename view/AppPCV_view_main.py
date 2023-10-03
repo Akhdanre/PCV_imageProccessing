@@ -97,6 +97,7 @@ class AppPCVViewMain(QMainWindow):
         
 
         self.view.actionFuzzy_Grayscale.triggered.connect(self.controller.fuzzyHistogram)
+        self.view.actionFuzzy_HE_RGB.triggered.connect(self.controller.fuzzyHistogramRGB)
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
