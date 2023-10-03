@@ -102,8 +102,11 @@ class AppPCVViewMain(QMainWindow):
             self.controller.fuzzyHistogram)
         self.view.actionFuzzy_HE_RGB.triggered.connect(
             self.controller.fuzzyHistogramRGB)
+        self.view.actionInput.triggered.connect(self.controller.histogramInput)
         self.view.actionOutput.triggered.connect(
             self.controller.histogramOutput)
+        self.view.actionInput_Output.triggered.connect(self.controller.histogramInputOutput)
+        
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)

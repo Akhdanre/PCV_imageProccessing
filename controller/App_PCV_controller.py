@@ -751,7 +751,6 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
-
     def scalingNonUniform(self):
         image_path = self.model.imgPath
         if image_path:
@@ -780,7 +779,6 @@ class AppPCVController(QObject):
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
-
 
     def gaussianBlur(self, kernel_size):
         image_path = self.model.imgPath
@@ -1000,15 +998,37 @@ class AppPCVController(QObject):
               role[fuzzy2Role])/(fuzzy1 + fuzzy2)
         return v0
 
-    def histogramOutput(self):
+    def histogramInput(self):
         before = self.model.getHistogramBefore()
-        after = self.model.getHistogramAfter()
-        plt.subplot(1, 2, 1)
-        plt.plot(before)
+        
+        plt.figure(figsize=(6, 4))
+        plt.bar(range(len(before)), before)
         plt.title("Histogram Sebelum")
+        
+        plt.show()
 
-        plt.subplot(1, 2, 2)
-        plt.plot(after)
+    def histogramOutput(self):
+        after = self.model.getHistogramAfter()
+
+        plt.figure(figsize=(6, 4))
+        plt.bar(range(len(after)), after)
         plt.title("Histogram Setelah")
 
         plt.show()
+
+    def histogramInputOutput(self):
+        before = self.model.getHistogramBefore()
+        after = self.model.getHistogramAfter()
+
+        plt.figure(figsize=(12, 4))
+
+        plt.subplot(1, 2, 1)
+        plt.bar(range(len(before)), before)
+        plt.title("Histogram Sebelum")
+
+        plt.subplot(1, 2, 2)
+        plt.bar(range(len(after)), after)
+        plt.title("Histogram Setelah")
+
+        plt.show()
+
