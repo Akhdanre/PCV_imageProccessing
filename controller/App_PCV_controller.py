@@ -939,3 +939,16 @@ class AppPCVController(QObject):
         v0 = (fuzzy1 * role[fuzzy1Role] + fuzzy2 *
               role[fuzzy2Role])/(fuzzy1 + fuzzy2)
         return v0
+
+    def histogramOutput(self):
+        before = self.model.getHistogramBefore()
+        after = self.model.getHistogramAfter()
+        plt.subplot(1, 2, 1)
+        plt.plot(before)
+        plt.title("Histogram Sebelum Fuzzy")
+
+        plt.subplot(1, 2, 2)
+        plt.plot(after)
+        plt.title("Histogram Setelah Fuzzy")
+
+        plt.show()

@@ -94,10 +94,13 @@ class AppPCVViewMain(QMainWindow):
             lambda: self.controller.gaussianBlur(3))
         self.view.actionGaussian_Blur_5x5.triggered.connect(
             lambda: self.controller.gaussianBlur(5))
-        
 
-        self.view.actionFuzzy_Grayscale.triggered.connect(self.controller.fuzzyHistogram)
-        self.view.actionFuzzy_HE_RGB.triggered.connect(self.controller.fuzzyHistogramRGB)
+        self.view.actionFuzzy_Grayscale.triggered.connect(
+            self.controller.fuzzyHistogram)
+        self.view.actionFuzzy_HE_RGB.triggered.connect(
+            self.controller.fuzzyHistogramRGB)
+        self.view.actionOutput.triggered.connect(
+            self.controller.histogramOutput)
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
@@ -128,6 +131,7 @@ class AppPCVViewMain(QMainWindow):
             lambda: self.controller.brightnessRoute(
                 route, sliderW.slider.value())
         )
+
     def sliderwindowrotasi(self):
         sliderW = SliderWindow(self)
         sliderW.show()
