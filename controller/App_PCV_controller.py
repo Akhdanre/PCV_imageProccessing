@@ -723,9 +723,35 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
+    def scalingUniform(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, chanels = image.shape
+            faktorScaling = 2
+
+            w = width * faktorScaling
+            h = height * faktorScaling
+
+            result = np.zeros((h, w), dtype=np.uint8)
+
+            for i in range(h)-1:
+                for j in range(w) -1:
+                    xOld = h / faktorScaling
+                    yOld = w / faktorScaling
+
+                    result[xOld, yOld] = image[round(height), round(width)]
+                
+            q_img = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
     def gaussianBlur(self, kernel_size):
         image_path = self.model.imgPath
         if image_path:
+
             image = mpimg.imread(image_path)
 
             kernel = np.fromfunction(
@@ -945,10 +971,10 @@ class AppPCVController(QObject):
         after = self.model.getHistogramAfter()
         plt.subplot(1, 2, 1)
         plt.plot(before)
-        plt.title("Histogram Sebelum Fuzzy")
+        plt.title("Histogram Sebelum")
 
         plt.subplot(1, 2, 2)
         plt.plot(after)
-        plt.title("Histogram Setelah Fuzzy")
+        plt.title("Histogram Setelah")
 
         plt.show()
