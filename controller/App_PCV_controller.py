@@ -1031,6 +1031,10 @@ class AppPCVController(QObject):
         plt.title("Histogram Setelah")
 
         plt.show()
+        
+    def grayscaleValue(self, arr):
+        value = (0.299 * arr[0]) + (0.587 * arr[ 1]) + (0.144 * arr[2])
+        return value
 
     def lowPass(self):
         image_path = self.model.imgPath
@@ -1039,7 +1043,9 @@ class AppPCVController(QObject):
             height, width, channels = image.shape
             result = np.zeros((height, width), dtype=np.uint8)
 
-            kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+            # kernel = np.array([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+            # kernel = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
+            kernel = np.array([[1/9, 1/9, 1/9], [1/9, 1/9, 1/9], [1/9, 1/9, 1/9]])
             m,n = kernel.shape
             for i in range(height):
                 if i + 2 >= height:
@@ -1050,8 +1056,9 @@ class AppPCVController(QObject):
                     total = 0
                     for m in range(3):
                         for n in range(3):
-                            total = total + (self.grayscaleValue(image[i+m, j]) * kernel[m, n])
-                    result[i+1, j+1] = np.clip(total, 0, 255)     
+                            total = total + (self.grayscaleValue(image[i+m, j+n]) * kernel[m, n])
+                            print(kernel[m, n])
+                    result[i+1, j+1] = min(max(int(total), 0), 255) # np.clip(total, 0, 255)     
                      
 
             heightR, widthR = result.shape
@@ -1063,6 +1070,3 @@ class AppPCVController(QObject):
             self.model.image_result_changed.emit(pixmap)  
 
     
-    def grayscaleValue(self, arr):
-        value = (0.299 * arr[0]) + (0.587 * arr[ 1]) + (0.144 * arr[2])
-        return value
