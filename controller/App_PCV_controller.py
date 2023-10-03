@@ -752,6 +752,36 @@ class AppPCVController(QObject):
             self.model.image_result_changed.emit(pixmap)
 
 
+    def scalingNonUniform(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            faktorScalingx = 1.5
+            faktorScalingy = 2
+
+            w = int(width * faktorScalingx)
+            h = int(height * faktorScalingy)
+
+            result = np.zeros((h, w, channels), dtype=np.uint8)
+
+            for i in range(h):
+                for j in range(w):
+                    xOld = i / faktorScalingx
+                    yOld = j / faktorScalingy
+
+                    xNearest = int(round(xOld))
+                    yNearest = int(round(yOld))
+
+                    if xNearest < height and yNearest < width:
+                        result[i, j] = image[xNearest, yNearest]
+
+            q_img = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+
+
     def gaussianBlur(self, kernel_size):
         image_path = self.model.imgPath
         if image_path:
