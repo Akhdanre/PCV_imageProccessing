@@ -11,6 +11,7 @@ import matplotlib.image as mpimg
 from PIL import Image
 from operasi_image.OperasiAritmatika import Ui_MainWindow
 import cv2
+import colorsys
 
 
 class AppPCVController(QObject):
@@ -1561,4 +1562,49 @@ class AppPCVController(QObject):
 
             pixmap = QPixmap.fromImage(q_image)
 
+            self.model.image_result_changed.emit(pixmap)
+
+
+    def rgbToHsv(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            image = image / 255.0
+
+            # Convert RGB to HSV
+            image_hsv = np.array([colorsys.rgb_to_hsv(pixel[0], pixel[1], pixel[2]) for pixel in image.reshape(-1, 3)])
+
+            # Reshape the resulting array back to the original image shape
+            image_hsv = image_hsv.reshape(image.shape)
+
+            # Convert HSV to RGB
+            image_rgb = np.array([colorsys.hsv_to_rgb(pixel[0], pixel[1], pixel[2]) for pixel in image_hsv.reshape(-1, 3)])
+
+            # Reshape the resulting array back to the original image shape
+            image_rgb = image_rgb.reshape(image.shape)
+
+            # Convert to QImage
+            h, w, _ = image_rgb.shape
+            q_image = QImage(image_rgb.data, w, h, 3 * w, QImage.Format_RGB888)
+
+            # Create QPixmap from QImage
+            pixmap = QPixmap.fromImage(q_image)
+
+            self.model.image_result_changed.emit(pixmap)
+
+    def rgbToYCrCb(self):
+        image_path = self.model.imgPath
+        if image_path:
+            # Membaca gambar
+            image = cv2.imread(image_path)
+
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            # Mengonversi RGB ke YCrCb
+            image_ycrcb = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2YCrCb)
+
+            h, w, _ = image_rgb.shape
+            bytes_per_line = 3 * w
+            q_image = QImage(image_ycrcb.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
