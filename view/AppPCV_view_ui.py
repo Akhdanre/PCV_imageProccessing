@@ -148,6 +148,8 @@ class PCV_view(object):
         self.actionFuzzy_HE_RGB.setObjectName("actionFuzzy_HE_RGB")
         self.actionFuzzy_Grayscale = QtWidgets.QAction(Project1)
         self.actionFuzzy_Grayscale.setObjectName("actionFuzzy_Grayscale")
+        self.actionRMBG = QtWidgets.QAction(Project1)
+        self.actionRMBG.setObjectName("actionRMBG")
         self.actionIDENTITY = QtWidgets.QAction(Project1)
         self.actionIDENTITY.setObjectName("actionIDENTITY")
         self.actionSharpen = QtWidgets.QAction(Project1)
@@ -234,6 +236,7 @@ class PCV_view(object):
         self.menuImage_Processing.addAction(self.actionHistogram_Equalization)
         self.menuImage_Processing.addAction(self.actionFuzzy_HE_RGB)
         self.menuImage_Processing.addAction(self.actionFuzzy_Grayscale)
+        self.menuImage_Processing.addAction(self.actionRMBG)
         self.menuEdge_Detection.addAction(self.actionEdge_Detection_1)
         self.menuEdge_Detection.addAction(self.actionEdge_Detection_2)
         self.menuEdge_Detection.addAction(self.actionEdge_Detection_3)
@@ -433,6 +436,8 @@ class PCV_view(object):
         self.actionFuzzy_HE_RGB.setText(_translate("Project1", "Fuzzy HE RGB"))
         self.actionFuzzy_Grayscale.setText(
             _translate("Project1", "Fuzzy Grayscale"))
+        self.actionRMBG.setText(
+            _translate("Project1", "remove BG"))
         self.actionIDENTITY.setText(_translate("Project1", "Identity"))
         self.actionSharpen.setText(_translate("Project1", "Sharpen"))
         self.actionUnsharp_Masking.setText(

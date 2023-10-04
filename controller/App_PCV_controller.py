@@ -1,7 +1,7 @@
 import math
 import sys
 from PyQt5.QtWidgets import QFileDialog, QWidget
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtCore import QObject, pyqtSlot, QBuffer
 from pathlib import Path
 from PyQt5.QtGui import QPixmap, QImage, QColor, QImageReader, qRgb
@@ -1413,8 +1413,8 @@ class AppPCVController(QObject):
                 for j in range(width):
                     gray_image[i, j] = self.grayscaleValue(image[i, j])
 
-            result = self.dilasi(gray_image, kernel)
             result = self.binary_threshold(result)
+            result = self.dilasi(gray_image, kernel)
 
             q_image = QImage(
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
@@ -1468,8 +1468,8 @@ class AppPCVController(QObject):
                 for j in range(width):
                     gray_image[i, j] = self.grayscaleValue(image[i, j])
 
-            result = self.erosi(gray_image, kernel)
-            result = self.binary_threshold(result)
+            result = self.binary_threshold(gray_image)
+            result = self.erosi(result, kernel)
 
             q_image = QImage(
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
@@ -1569,51 +1569,125 @@ class AppPCVController(QObject):
 
             self.model.image_result_changed.emit(pixmap)
 
+    # def rgbToHsv(self):
+    #     image_path = self.model.imgPath
+    #     if image_path:
+    #         image = mpimg.imread(image_path)
+    #         image = image / 255.0
+
+    #         # Convert RGB to HSV
+    #         image_hsv = np.array([colorsys.rgb_to_hsv(
+    #             pixel[0], pixel[1], pixel[2]) for pixel in image.reshape(-1, 3)])
+
+    #         # Reshape the resulting array back to the original image shape
+    #         image_hsv = image_hsv.reshape(image.shape)
+
+    #         # Convert HSV to RGB
+    #         image_rgb = np.array([colorsys.hsv_to_rgb(
+    #             pixel[0], pixel[1], pixel[2]) for pixel in image_hsv.reshape(-1, 3)])
+
+    #         # Reshape the resulting array back to the original image shape
+    #         image_rgb = image_rgb.reshape(image.shape)
+
+    #         # Convert to QImage
+    #         h, w, _ = image_rgb.shape
+    #         q_image = QImage(image_rgb.data, w, h, 3 * w, QImage.Format_RGB888)
+
+    #         # Create QPixmap from QImage
+    #         pixmap = QPixmap.fromImage(q_image)
+
+    #         self.model.image_result_changed.emit(pixmap)
+
     def rgbToHsv(self):
         image_path = self.model.imgPath
         if image_path:
-            image = mpimg.imread(image_path)
-            image = image / 255.0
+            image = cv2.imread(image_path)
+            if image is None:
+                return
 
-            # Convert RGB to HSV
-            image_hsv = np.array([colorsys.rgb_to_hsv(
-                pixel[0], pixel[1], pixel[2]) for pixel in image.reshape(-1, 3)])
+            # Mengambil channel R, G, dan B dari gambar
+            R, G, B = image[:, :, 2], image[:, :, 1], image[:, :, 0]
 
-            # Reshape the resulting array back to the original image shape
-            image_hsv = image_hsv.reshape(image.shape)
+            # Hitung nilai V (Value)
+            V = np.maximum(R, np.maximum(G, B))
+            Vm = V - np.minimum(R, np.minimum(G, B))
 
-            # Convert HSV to RGB
-            image_rgb = np.array([colorsys.hsv_to_rgb(
-                pixel[0], pixel[1], pixel[2]) for pixel in image_hsv.reshape(-1, 3)])
+            # Inisialisasi matriks S (Saturation)
+            S = np.zeros_like(V)
 
-            # Reshape the resulting array back to the original image shape
-            image_rgb = image_rgb.reshape(image.shape)
+            # Hitung nilai S (Saturation) hanya pada piksel dengan V > 0
+            nonzero_v = V > 0
+            S[nonzero_v] = Vm[nonzero_v] / V[nonzero_v]
 
-            # Convert to QImage
-            h, w, _ = image_rgb.shape
-            q_image = QImage(image_rgb.data, w, h, 3 * w, QImage.Format_RGB888)
+            # Inisialisasi matriks H (Hue)
+            H = np.zeros_like(V)
 
-            # Create QPixmap from QImage
-            pixmap = QPixmap.fromImage(q_image)
+            # Hitung nilai H (Hue) hanya pada piksel dengan V > 0
+            nonzero_v = V > 0
+            R_normalized = (V - R)[nonzero_v] / Vm[nonzero_v]
+            G_normalized = (V - G)[nonzero_v] / Vm[nonzero_v]
+            B_normalized = (V - B)[nonzero_v] / Vm[nonzero_v]
 
+            H[nonzero_v] = np.where(V[nonzero_v] == R[nonzero_v], 60 * (2 + B_normalized - G_normalized), H[nonzero_v])
+            H[nonzero_v] = np.where(V[nonzero_v] == G[nonzero_v], 60 * (4 + R_normalized - B_normalized), H[nonzero_v])
+            H[nonzero_v] = np.where(V[nonzero_v] == B[nonzero_v], 60 * (G_normalized - R_normalized), H[nonzero_v])
+
+            # Konversi H, S, V ke rentang 0-255
+            H = (H / 360.0) * 255.0
+            S = S * 255.0
+            V = (V / 255.0) * 255.0
+
+            # Gabungkan H, S, V kembali menjadi gambar RGB
+            result_image = cv2.merge([H, S, V]).astype(np.uint8)
+
+            # Konversi hasil kembali ke QImage
+            h, w, c = result_image.shape
+            bytes_per_line = 3 * w
+            qimage_result = QtGui.QImage(
+                result_image.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888
+            )
+            pixmap = QPixmap.fromImage(qimage_result)
             self.model.image_result_changed.emit(pixmap)
+
+    # def rgbToYCrCb(self):
+    #     image_path = self.model.imgPath
+    #     if image_path:
+    #         # Membaca gambar
+    #         image = cv2.imread(image_path)
+
+    #         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    #         # Mengonversi RGB ke YCrCb
+    #         image_ycrcb = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2YCrCb)
+
+    #         h, w, _ = image_rgb.shape
+    #         bytes_per_line = 3 * w
+    #         q_image = QImage(image_ycrcb.data, w, h,
+    #                          bytes_per_line, QImage.Format_RGB888)
+    #         pixmap = QPixmap.fromImage(q_image)
+    #         self.model.image_result_changed.emit(pixmap)
 
     def rgbToYCrCb(self):
         image_path = self.model.imgPath
         if image_path:
-            # Membaca gambar
             image = cv2.imread(image_path)
 
-            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            ycbcr_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
 
-            # Mengonversi RGB ke YCrCb
-            image_ycrcb = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2YCrCb)
+            # Ekstrak komponen Y, Cb, dan Cr
+            Y = ycbcr_image[:, :, 0]
+            Cb = ycbcr_image[:, :, 1]
+            Cr = ycbcr_image[:, :, 2]
 
-            h, w, _ = image_rgb.shape
+            # Konversi hasil kembali ke QImage
+            h, w = Y.shape
+            ycbcr_result = cv2.merge([Y, Cb, Cr])
             bytes_per_line = 3 * w
-            q_image = QImage(image_ycrcb.data, w, h,
-                             bytes_per_line, QImage.Format_RGB888)
-            pixmap = QPixmap.fromImage(q_image)
+            qimage_result = QtGui.QImage(
+                ycbcr_result.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888
+            )
+
+            pixmap = QPixmap.fromImage(qimage_result)
             self.model.image_result_changed.emit(pixmap)
 
     def removeBg(self):

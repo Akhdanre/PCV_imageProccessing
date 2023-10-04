@@ -158,6 +158,7 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionRgbYrcbc.triggered.connect(self.controller.rgbToYCrCb)
 
         self.view.actionSegmentasi.triggered.connect(self.controller.SegmentasiCitra)
+        self.view.actionRMBG.triggered.connect(self.controller.removeBg)
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
         self.view.actionArtBack.triggered.connect(self.hideMiddleLable)
