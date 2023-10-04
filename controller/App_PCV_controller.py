@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from PIL import Image
 from operasi_image.OperasiAritmatika import Ui_MainWindow
-import scipy.ndimage
+import cv2
 
 
 class AppPCVController(QObject):
@@ -66,48 +66,37 @@ class AppPCVController(QObject):
         image_path = self.model.imgPath
         if image_path:
             image = Image.open(image_path)
-            imgray = image.convert(mode='L')
-            img_array = np.asarray(imgray)
 
-            brightness = 50  # Ganti dengan nilai kecerahan yang diinginkan
+            if image.mode != 'L':
+                image = image.convert('L')
 
-            # Mengatur kecerahan dengan rumus hasil = f(x, y) + brightness
-            brightened_img_array = np.clip(
-                img_array + brightness, 0, 255).astype(np.uint8)
+            width, height = image.size
 
-            histogram_before = np.bincount(img_array.flatten(), minlength=256)
+            hist_before = image.histogram()
 
-            num_pixels = np.sum(histogram_before)
-            histogram_before = histogram_before / num_pixels
-            chistogram_before = np.cumsum(histogram_before)
-            transform_map = np.floor(255 * chistogram_before).astype(np.uint8)
-            img_list = list(brightened_img_array.flatten())
-            eq_img_list = [transform_map[p] for p in img_list]
-            eq_img_array = np.reshape(np.asarray(
-                eq_img_list), brightened_img_array.shape)
-            eq_qimage = QImage(eq_img_array.tobytes(
-            ), eq_img_array.shape[1], eq_img_array.shape[0], QImage.Format_Grayscale8)
-            pixmap = QPixmap.fromImage(eq_qimage)
+            cdf = [sum(hist_before[:i+1]) for i in range(256)]
+
+            w, h = width, height
+            normalization_factor = (w * h) - 1
+
+            equalized_image = Image.new('L', (width, height))
+            pixels = equalized_image.load()
+
+            for x in range(width):
+                for y in range(height):
+                    pixel_value = image.getpixel((x, y))
+                    new_pixel_value = round(cdf[pixel_value] * 255 / normalization_factor)
+                    pixels[x, y] = new_pixel_value
+
+            hist_after = equalized_image.histogram()
+
+            self.model.setHistogramBefore(hist_before)
+            self.model.setHistogramAfter(hist_after)
+            q_image = QImage(equalized_image.tobytes(), width, height, QImage.Format_Grayscale8)
+            pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
-            histogram_after = np.bincount(
-                eq_img_array.flatten(), minlength=256)
-            histogram_after = histogram_after / np.sum(histogram_after)
 
-            plt.figure(figsize=(12, 6))
-            plt.subplot(1, 2, 1)
-            plt.bar(range(256), histogram_before, color='b', alpha=0.7)
-            plt.title('Before Histogram Equalization')
-            plt.xlabel('Pixel Value')
-            plt.ylabel('Normalized Frequency')
 
-            plt.subplot(1, 2, 2)
-            plt.bar(range(256), histogram_after, color='r', alpha=0.7)
-            plt.title('After Histogram Equalization')
-            plt.xlabel('Pixel Value')
-            plt.ylabel('Normalized Frequency')
-
-            plt.tight_layout()
-            plt.show()
 
     def identify_axes(ax_dict, fontsize=48):
         kw = dict(ha="center", va="center",
@@ -1536,4 +1525,40 @@ class AppPCVController(QObject):
             q_image = QImage(
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
             pixmap = QPixmap.fromImage(q_image)
+            self.model.image_result_changed.emit(pixmap)
+
+    def segmentROI(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = cv2.imread(image_path)
+            if image is None:
+                return
+
+            # Konversi gambar ke mode warna HSV
+            hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            self.upper_hue = 120
+            self.upper_saturation = 255
+            self.upper_value = 255
+
+            self.lower_hue = 90
+            self.lower_saturation = 0
+            self.lower_value = 90
+            lower = np.array([self.lower_hue, self.lower_saturation, self.lower_value])
+            upper = np.array([self.upper_hue, self.upper_saturation, self.upper_value])
+
+            mask = cv2.inRange(hsv_image, lower, upper)
+
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            image_with_contours = image.copy()
+            for contour in contours:
+                x, y, w, h = cv2.boundingRect(contour)  
+                cv2.rectangle(image_with_contours, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
+            height, width, channel = image_with_contours.shape
+            bytes_per_line = 3 * width
+            q_image = QImage(image_with_contours.data, width, height, bytes_per_line, QImage.Format_RGB888)
+
+            pixmap = QPixmap.fromImage(q_image)
+
             self.model.image_result_changed.emit(pixmap)

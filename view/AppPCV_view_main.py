@@ -148,6 +148,8 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionInput_Output.triggered.connect(
             self.controller.histogramInputOutput)
 
+        self.view.actionRoi.triggered.connect(self.controller.segmentROI)
+
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
         self.view.actionCrop.triggered.connect(self.controller.Crop)
