@@ -114,7 +114,19 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionSharpen.triggered.connect(
             self.controller.sharpenFilter)
         self.view.actionUnsharp_Masking.triggered.connect(
-            self.controller.unsharpMaskFilter)
+            self.controller.unsharpMaskFilter)\
+
+        # morfologi action
+        self.view.actionDilationCross_4.triggered.connect(lambda:
+                                                          self.controller.morfologiDilasi("cross3"))
+        self.view.actionDilationSquare_4.triggered.connect(lambda:
+                                                           self.controller.morfologiDilasi("square3"))
+        self.view.actionDilationSquare_6.triggered.connect(lambda:
+                                                           self.controller.morfologiDilasi("square5"))
+
+        self.view.actionErosionCross_3.triggered.connect(lambda: self.controller.morfologiErosi("cross3"))
+        self.view.actionErosionSquare_3.triggered.connect(lambda: self.controller.morfologiErosi("square3"))
+        self.view.actionErosionSquare_5.triggered.connect(lambda: self.controller.morfologiErosi("square5"))
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)

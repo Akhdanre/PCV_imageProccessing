@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from PIL import Image
 from operasi_image.OperasiAritmatika import Ui_MainWindow
+import scipy.ndimage
 
 
 class AppPCVController(QObject):
@@ -1113,7 +1114,7 @@ class AppPCVController(QObject):
 
             kernel = np.array([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
             m, n = kernel.shape
-            for c in range(channels):  
+            for c in range(channels):
                 for i in range(height):
                     if i + 2 >= height:
                         break
@@ -1143,7 +1144,7 @@ class AppPCVController(QObject):
 
             kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
             m, n = kernel.shape
-            for c in range(channels):  
+            for c in range(channels):
                 for i in range(height):
                     if i + 2 >= height:
                         break
@@ -1171,25 +1172,27 @@ class AppPCVController(QObject):
             height, width, channels = image.shape
             result = np.zeros((height, width, channels), dtype=np.uint8)
 
-            kernel = np.array([[1, 4, 6, 4, 1], [4, 16, 24, 16, 4], [6, 24, 36, 24, 6], [4, 16, 24, 16, 4], [1, 4, 6, 4, 1]])
+            kernel = np.array([[1, 4, 6, 4, 1], [4, 16, 24, 16, 4], [
+                              6, 24, 36, 24, 6], [4, 16, 24, 16, 4], [1, 4, 6, 4, 1]])
             m, n = kernel.shape
-            border = m // 2 # berfungsi untuk menjaga agar kernel tidak keluar 
+            border = m // 2  # berfungsi untuk menjaga agar kernel tidak keluar
             for c in range(channels):
                 for i in range(border, height - border):
                     for j in range(border, width - border):
                         total = 0
                         for x in range(m):
                             for y in range(n):
-                                total += image[i - border + x, j - border + y, c] * kernel[x, y]
+                                total += image[i - border + x,
+                                               j - border + y, c] * kernel[x, y]
                         result[i, j, c] = np.clip(total // 256, 0, 255)
 
             heightR, widthR, channelsR = result.shape
             bytes_per_line = channelsR * widthR
-            q_img = QImage(result.data, widthR, heightR, bytes_per_line, QImage.Format_RGB888)
+            q_img = QImage(result.data, widthR, heightR,
+                           bytes_per_line, QImage.Format_RGB888)
 
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
-
 
     def sobel(self):
         image_path = self.model.imgPath
@@ -1285,4 +1288,176 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
 
-            
+    # def morfologiDilasi(self, kernelType):
+    #     image_path = self.model.imgPath
+    #     if image_path:
+    #         image = mpimg.imread(image_path)
+    #         height, width, channels = image.shape
+
+    #         # Buat gambar baru untuk menyimpan hasil dilasi
+    #         dilated_image = np.zeros((height, width), dtype=np.uint8)
+
+    #         # Pilih kernel berdasarkan jenis kernel
+    #         if kernelType == "cross":
+    #             kernel = np.array([[0, 1, 0],
+    #                             [1, 1, 1],
+    #                             [0, 1, 0]], dtype=np.uint8)
+    #         elif kernelType == "square3":
+    #             kernel = np.array([[1, 1, 1],
+    #                             [1, 1, 1],
+    #                             [1, 1, 1]], dtype=np.uint8)
+    #         elif kernelType == "square5":
+    #             kernel = np.array([[0, 1, 1, 1, 0],
+    #                             [1, 1, 1, 1, 1],
+    #                             [1, 1, 1, 1, 1],
+    #                             [1, 1, 1, 1, 1],
+    #                             [0, 1, 1, 1, 0]], dtype=np.uint8)
+
+    #         kernel_height, kernel_width = kernel.shape
+
+    #         for y in range(height):
+    #             for x in range(width):
+    #                 max_pixel_value = 0
+    #                 for ky in range(kernel_height):
+    #                     for kx in range(kernel_width):
+    #                         img_y = y + ky - (kernel_height // 2)
+    #                         img_x = x + kx - (kernel_width // 2)
+
+    #                         if 0 <= img_y < height and 0 <= img_x < width:
+    #                             max_pixel_value = max(
+    #                                 max_pixel_value, kernel[ky, kx] * image[img_y, img_x])
+
+    #                 dilated_image[y, x] = max_pixel_value
+
+    #         # Konversi hasil dilasi ke tipe data yang benar untuk ditampilkan
+    #         dilated_image = (dilated_image * 255).astype(np.uint8)
+
+    #         heightR, widthR = dilated_image.shape
+    #         bytes_per_line = widthR
+    #         q_img = QImage(dilated_image.data, widthR, heightR,
+    #                     bytes_per_line, QImage.Format_Grayscale8)
+
+    #         pixmap = QPixmap.fromImage(q_img)
+    #         self.model.image_result_changed.emit(pixmap)
+
+    def binary_threshold(self, image):
+        threshold_value = 128
+        thresholded_image = np.zeros_like(image)
+
+        # Lakukan thresholding piksel per piksel
+        thresholded_image[image <= threshold_value] = 255
+
+        return thresholded_image
+
+    def dilate(self, image, kernel):
+        height, width = image.shape
+        result = np.zeros((height, width), dtype=np.uint8)
+        k_height, k_width = kernel.shape
+
+        pad_height = k_height // 2
+        pad_width = k_width // 2
+
+        # Melakukan padding pada citra dengan nilai nol
+        padded_image = np.pad(
+            image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
+
+        # Dilasi
+        for i in range(pad_height, height + pad_height):
+            for j in range(pad_width, width + pad_width):
+                result[i - pad_height, j - pad_width] = np.max(
+                    padded_image[i - pad_height:i + pad_height + 1, j - pad_width:j + pad_width + 1] * kernel)
+
+        return result
+
+    def morfologiDilasi(self, kernel_type='square3'):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+
+            if kernel_type == 'square3':
+                kernel = np.array([[1, 1, 1],
+                                   [1, 1, 1],
+                                   [1, 1, 1]], dtype=np.uint8)
+            elif kernel_type == 'square5':
+                kernel = np.array([[1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1]], dtype=np.uint8)
+            elif kernel_type == 'cross3':
+                kernel = np.array([[0, 1, 0],
+                                   [1, 1, 1],
+                                   [0, 1, 0]], dtype=np.uint8)
+            else:
+                raise ValueError("Kernel type not recognized.")
+
+            gray_image = np.zeros((height, width), dtype=np.uint8)
+            for i in range(height):
+                for j in range(width):
+                    gray_image[i, j] = self.grayscaleValue(image[i, j])
+
+            result = self.dilate(gray_image, kernel)
+            result = self.binary_threshold(result)
+
+            q_image = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
+            # Menampilkan hasil
+            pixmap = QPixmap.fromImage(q_image)
+            self.model.image_result_changed.emit(pixmap)
+
+    def erosi(self, image, kernel):
+        height, width = image.shape
+        result = np.zeros((height, width), dtype=np.uint8)
+        k_height, k_width = kernel.shape
+
+        pad_height = k_height // 2
+        pad_width = k_width // 2
+
+        padded_image = np.pad(
+            image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
+
+        # Erosi
+        for i in range(pad_height, height + pad_height):
+            for j in range(pad_width, width + pad_width):
+                result[i - pad_height, j - pad_width] = np.min(
+                    padded_image[i - pad_height:i + pad_height + 1, j - pad_width:j + pad_width + 1] * kernel)
+
+        return result
+
+    def morfologiErosi(self, kernel_type='square3'):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+
+            if kernel_type == 'square3':
+                kernel = np.array([[1, 1, 1],
+                                [1, 1, 1],
+                                [1, 1, 1]], dtype=np.uint8)
+            elif kernel_type == 'square5':
+                kernel = np.array([[1, 1, 1, 1, 1],
+                                [1, 1, 1, 1, 1],
+                                [1, 1, 1, 1, 1],
+                                [1, 1, 1, 1, 1],
+                                [1, 1, 1, 1, 1]], dtype=np.uint8)
+            elif kernel_type == 'cross3':
+                kernel = np.array([[0, 1, 0],
+                                [1, 1, 1],
+                                [0, 1, 0]], dtype=np.uint8)
+            else:
+                raise ValueError("Kernel type not recognized.")
+
+            gray_image = np.zeros((height, width), dtype=np.uint8)
+            for i in range(height):
+                for j in range(width):
+                    gray_image[i, j] = self.grayscaleValue(image[i, j])
+
+            result = self.erosi(gray_image, kernel)
+            result = self.binary_threshold(result)
+
+            q_image = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
+            pixmap = QPixmap.fromImage(q_image)
+            self.model.image_result_changed.emit(pixmap)
+
