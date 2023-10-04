@@ -10,6 +10,7 @@ class AppPCVModel(QObject):
 
     def __init__(self):
         super().__init__()
+        self._indexSelected = []
 
     @property
     def imgPath(self):
@@ -38,3 +39,13 @@ class AppPCVModel(QObject):
 
     def getHistogramAfter(self):
         return self.histogramAfter
+
+
+    def getIndexSelected(self):
+        return self._indexSelected
+
+    def addToIndexSelected(self, value):
+        self._indexSelected.append(value)
+
+    def setIndexSlectedToNull(self):
+        self._indexSelected = []

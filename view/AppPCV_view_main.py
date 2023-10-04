@@ -34,6 +34,8 @@ class AppPCVViewMain(QMainWindow):
         y = (height - self.height()) / 2
         self.move(x, y)
 
+        self.crop_menu_active = False
+
         self.view.actionOpen.triggered.connect(
             lambda: self.controller.onOpen(1))
         self.view.actionSave_As.triggered.connect(
@@ -124,12 +126,17 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionDilationSquare_6.triggered.connect(lambda:
                                                            self.controller.morfologiDilasi("square5"))
 
-        self.view.actionErosionCross_3.triggered.connect(lambda: self.controller.morfologiErosi("cross3"))
-        self.view.actionErosionSquare_3.triggered.connect(lambda: self.controller.morfologiErosi("square3"))
-        self.view.actionErosionSquare_5.triggered.connect(lambda: self.controller.morfologiErosi("square5"))
+        self.view.actionErosionCross_3.triggered.connect(
+            lambda: self.controller.morfologiErosi("cross3"))
+        self.view.actionErosionSquare_3.triggered.connect(
+            lambda: self.controller.morfologiErosi("square3"))
+        self.view.actionErosionSquare_5.triggered.connect(
+            lambda: self.controller.morfologiErosi("square5"))
 
-        self.view.actionSquare_9.triggered.connect(self.controller.morfologiOpening)
-        self.view.actionSquare_10.triggered.connect(self.controller.morfologiClosing)
+        self.view.actionSquare_9.triggered.connect(
+            self.controller.morfologiOpening)
+        self.view.actionSquare_10.triggered.connect(
+            self.controller.morfologiClosing)
 
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
@@ -143,6 +150,7 @@ class AppPCVViewMain(QMainWindow):
 
         self.view.actionTranslasi.triggered.connect(self.sliderWindowTranslasi)
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
+        self.view.actionCrop.triggered.connect(self.controller.Crop)
 
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
@@ -153,15 +161,25 @@ class AppPCVViewMain(QMainWindow):
         self.model.image_path_changed2.connect(self.on_image_change2)
 
         self.view.label_3.mousePressEvent = self.lable3Open
-        self.view.label.mousePressEvent = self.lableOpen
+        # self.view.label.mousePressEvent = self.lableOpen
+        self.view.label.mousePressEvent = self.label_click_event
 
-    def lableOpen(self, event):
-        if event.button() == Qt.LeftButton:
-            self.controller.onOpen(1)
+    # def lableOpen(self, event):
+    #     if event.button() == Qt.LeftButton:
+    #         self.controller.onOpen(1)
 
     def lable3Open(self, event):
         if event.button() == Qt.LeftButton:
             self.controller.onOpen(2)
+
+    def label_click_event(self, event):
+        if event.button() == Qt.LeftButton:
+            self.controller.onOpen(1)
+        if event.button() == Qt.RightButton:
+            x = event.pos().x()
+            y = event.pos().y()
+            self.model.addToIndexSelected([x, y])
+            print(self.model.getIndexSelected())
 
     def sliderWindow(self, route):
         sliderW = SliderWindow(self)
@@ -217,4 +235,4 @@ class AppPCVViewMain(QMainWindow):
     def on_image_result(self, value):
         self.view.label_2.setPixmap(value)
         self.view.label_2.setAlignment(Qt.AlignCenter)
-        self.view.label_2.setScaledContents(True)
+        # self.view.label_2.setScaledContents(True)

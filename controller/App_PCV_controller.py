@@ -14,7 +14,7 @@ import scipy.ndimage
 
 
 class AppPCVController(QObject):
-
+    
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -844,6 +844,35 @@ class AppPCVController(QObject):
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
+
+    def Crop(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            indices = self.model.getIndexSelected()
+            xL = indices[0][0]
+            xR = indices[1][0]
+            yT = indices[0][1]
+            yB = indices[1][1]
+
+            # Crop the image based on the selected indices
+            cropped_image = image[yT:yB, xL:xR]
+
+            # Create a QImage from the cropped image
+            height, width, channel = cropped_image.shape
+            bytes_per_line = 3 * width
+            q_img = QImage(
+                cropped_image.data.tobytes(),  # Menggunakan .tobytes() untuk mengambil data sebagai bytes
+                width, height, bytes_per_line,
+                QImage.Format_RGB888
+            )
+            
+            pixmap = QPixmap.fromImage(q_img)
+            self.model.image_result_changed.emit(pixmap)
+            self.model.setIndexSlectedToNull()
+
+
+
 
     def rotasi(self, degree):
         image_path = self.model.imgPath

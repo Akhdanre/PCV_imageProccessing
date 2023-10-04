@@ -67,6 +67,8 @@ class PCV_view(object):
         self.menuOpening.setObjectName("menuOpening")
         self.menuGeometri = QtWidgets.QMenu(self.menubar)
         self.menuGeometri.setObjectName("menuGeometri")
+        self.menuSegmentasi = QtWidgets.QMenu(self.menubar)
+        self.menuSegmentasi.setObjectName("menuSegmentasi")
         self.menuFlip = QtWidgets.QMenu(self.menuGeometri)
         self.menuAritmatika = QtWidgets.QMenu(self.menuAritmetical_Operation)
         self.menuAritmatika.setObjectName("menuAritmatika")
@@ -264,6 +266,7 @@ class PCV_view(object):
         self.menubar.addAction(self.menuEdge_Detection_2.menuAction())
         self.menubar.addAction(self.menuMorfologi.menuAction())
         self.menubar.addAction(self.menuGeometri.menuAction())
+        self.menubar.addAction(self.menuSegmentasi.menuAction())
         # self.actionAritmatika = QtWidgets.QAction(Project1)
         # self.actionAritmatika.setObjectName("actionAritmatika")
         self.actionSplit = QtWidgets.QAction(Project1)
@@ -295,7 +298,9 @@ class PCV_view(object):
         self.menuGeometri.addAction(self.actionCrop)
         self.menuGeometri.addAction(self.actionTranslasi)
         self.menuGeometri.addAction(self.actionRotasi)
-
+        self.actionRoi = QtWidgets.QAction(Project1)
+        self.actionRoi.setObjectName("actionRoi")
+        self.menuSegmentasi.addAction(self.actionRoi)
         # self.menuLogika = QtWidgets.QAction(Project1)
         # self.actionNOT.setObjectName("actionNOT")
 
@@ -380,6 +385,7 @@ class PCV_view(object):
         self.menuClosing.setTitle(_translate("Project1", "Closing"))
         self.menuOpening.setTitle(_translate("Project1", "Opening"))
         self.menuGeometri.setTitle(_translate("Project1", "Geometri"))
+        self.menuSegmentasi.setTitle(_translate("Project1", "Segmentasi Citra"))
         self.actionOpen.setText(_translate("Project1", "Open"))
         self.action_save.setText(_translate("Project1", "Save"))
         self.actionSave_As.setText(_translate("Project1", "Save As"))
@@ -443,8 +449,10 @@ class PCV_view(object):
         self.actionPrewitt.setText(_translate("Project1", "Prewitt"))
         self.actionRobert.setText(_translate("Project1", "Robert"))
         self.actionSbbel.setText(_translate("Project1", "Sobel"))
-        self.actionErosionSquare_3.setText(_translate("Project1", "Square 3x3"))
-        self.actionErosionSquare_5.setText(_translate("Project1", "Square 5x5"))
+        self.actionErosionSquare_3.setText(
+            _translate("Project1", "Square 3x3"))
+        self.actionErosionSquare_5.setText(
+            _translate("Project1", "Square 5x5"))
         self.actionErosionCross_3.setText(_translate("Project1", "Cross 3x3"))
         self.actionDilationSquare_4.setText(
             _translate("Project1", "Square 3x3"))
@@ -484,6 +492,7 @@ class PCV_view(object):
             _translate("Project1", "Perkalian Skalar C"))
         self.actionPembagianSC.setText(
             _translate("Project1", "Pembagian Skalar C"))
+        self.actionRoi.setText(_translate("Project1", "ROI"))
 
         # Label Text
         self.label.setText(_translate("Project1", "Click to pick image"))
