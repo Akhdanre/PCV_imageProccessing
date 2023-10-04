@@ -452,7 +452,7 @@ class PCV_view(object):
             _translate("Project1", "Square 5x5"))
         self.actionDilationCross_4.setText(_translate("Project1", "Cross 3x3"))
         self.actionSquare_9.setText(_translate("Project1", "Square 9x9"))
-        self.actionSquare_10.setText(_translate("Project1", "Square 10x10"))
+        self.actionSquare_10.setText(_translate("Project1", "Square 9x9"))
         self.actionSplit.setText(_translate("Project1", "Split 3 Image"))
         self.actionArtBack.setText(_translate("Project1", "Back 2 slot Image"))
         self.actionVertikal.setText(_translate("Project1", "Vertikal"))
