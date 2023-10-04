@@ -99,6 +99,10 @@ class PCV_view(object):
         self.actionLog_Brightness.setObjectName("actionLog_Brightness")
         self.actionGamma_Correction = QtWidgets.QAction(Project1)
         self.actionGamma_Correction.setObjectName("actionGamma_Correction")
+        self.actionRgbHsv = QtWidgets.QAction(Project1)
+        self.actionRgbHsv.setObjectName("actionRgbHsv")
+        self.actionRgbYrcbc = QtWidgets.QAction(Project1)
+        self.actionRgbYrcbc.setObjectName("actionRgbYrcbc")
         self.actionKuning = QtWidgets.QAction(Project1)
         self.actionKuning.setObjectName("actionKuning")
         self.actionOrange = QtWidgets.QAction(Project1)
@@ -225,6 +229,8 @@ class PCV_view(object):
         self.menuColors.addAction(self.actionLog_Brightness)
         self.menuColors.addAction(self.menuBit_Depth.menuAction())
         self.menuColors.addAction(self.actionGamma_Correction)
+        self.menuColors.addAction(self.actionRgbHsv)
+        self.menuColors.addAction(self.actionRgbYrcbc)
         self.menuImage_Processing.addAction(self.actionHistogram_Equalization)
         self.menuImage_Processing.addAction(self.actionFuzzy_HE_RGB)
         self.menuImage_Processing.addAction(self.actionFuzzy_Grayscale)
@@ -298,11 +304,14 @@ class PCV_view(object):
         self.menuGeometri.addAction(self.actionCrop)
         self.menuGeometri.addAction(self.actionTranslasi)
         self.menuGeometri.addAction(self.actionRotasi)
+        self.actionSegmentasi = QtWidgets.QAction(Project1)
+        self.actionSegmentasi.setObjectName("actionSegmentasi")
         self.actionRoi = QtWidgets.QAction(Project1)
         self.actionRoi.setObjectName("actionRoi")
         self.menuSegmentasi.addAction(self.actionRoi)
+        self.menuSegmentasi.addAction(self.actionSegmentasi)
         # self.menuLogika = QtWidgets.QAction(Project1)
-        # self.actionNOT.setObjectName("actionNOT")
+        # self.actionNOT.setObjectName("actionNOT")actionRoi
 
         self.menuLogika = QtWidgets.QMenu(self.menuAritmatika)
         self.menuLogika.setObjectName("menuLogika")
@@ -493,6 +502,9 @@ class PCV_view(object):
         self.actionPembagianSC.setText(
             _translate("Project1", "Pembagian Skalar C"))
         self.actionRoi.setText(_translate("Project1", "ROI"))
+        self.actionRgbHsv.setText(_translate("Project1", "RGB To HSV"))
+        self.actionRgbYrcbc.setText(_translate("Project1", "RGB To Ycrbc"))
+        self.actionSegmentasi.setText(_translate("Project1", "Segmentasi Citra"))
 
         # Label Text
         self.label.setText(_translate("Project1", "Click to pick image"))

@@ -12,10 +12,11 @@ from PIL import Image
 from operasi_image.OperasiAritmatika import Ui_MainWindow
 import cv2
 import colorsys
+from rembg import remove
 
 
 class AppPCVController(QObject):
-    
+
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -86,18 +87,18 @@ class AppPCVController(QObject):
             for x in range(width):
                 for y in range(height):
                     pixel_value = image.getpixel((x, y))
-                    new_pixel_value = round(cdf[pixel_value] * 255 / normalization_factor)
+                    new_pixel_value = round(
+                        cdf[pixel_value] * 255 / normalization_factor)
                     pixels[x, y] = new_pixel_value
 
             hist_after = equalized_image.histogram()
 
             self.model.setHistogramBefore(hist_before)
             self.model.setHistogramAfter(hist_after)
-            q_image = QImage(equalized_image.tobytes(), width, height, QImage.Format_Grayscale8)
+            q_image = QImage(equalized_image.tobytes(), width,
+                             height, QImage.Format_Grayscale8)
             pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
-
-
 
     def identify_axes(ax_dict, fontsize=48):
         kw = dict(ha="center", va="center",
@@ -852,17 +853,15 @@ class AppPCVController(QObject):
             height, width, channel = cropped_image.shape
             bytes_per_line = 3 * width
             q_img = QImage(
-                cropped_image.data.tobytes(),  # Menggunakan .tobytes() untuk mengambil data sebagai bytes
+                # Menggunakan .tobytes() untuk mengambil data sebagai bytes
+                cropped_image.data.tobytes(),
                 width, height, bytes_per_line,
                 QImage.Format_RGB888
             )
-            
+
             pixmap = QPixmap.fromImage(q_img)
             self.model.image_result_changed.emit(pixmap)
             self.model.setIndexSlectedToNull()
-
-
-
 
     def rotasi(self, degree):
         image_path = self.model.imgPath
@@ -1449,18 +1448,18 @@ class AppPCVController(QObject):
 
             if kernel_type == 'square3':
                 kernel = np.array([[1, 1, 1],
-                                [1, 1, 1],
-                                [1, 1, 1]], dtype=np.uint8)
+                                   [1, 1, 1],
+                                   [1, 1, 1]], dtype=np.uint8)
             elif kernel_type == 'square5':
                 kernel = np.array([[1, 1, 1, 1, 1],
-                                [1, 1, 1, 1, 1],
-                                [1, 1, 1, 1, 1],
-                                [1, 1, 1, 1, 1],
-                                [1, 1, 1, 1, 1]], dtype=np.uint8)
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1],
+                                   [1, 1, 1, 1, 1]], dtype=np.uint8)
             elif kernel_type == 'cross3':
                 kernel = np.array([[0, 1, 0],
-                                [1, 1, 1],
-                                [0, 1, 0]], dtype=np.uint8)
+                                   [1, 1, 1],
+                                   [0, 1, 0]], dtype=np.uint8)
             else:
                 raise ValueError("Kernel type not recognized.")
 
@@ -1476,7 +1475,6 @@ class AppPCVController(QObject):
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
             pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
-
 
     def opening(self, image, kernel):
         eroded_image = self.erosi(image, kernel)
@@ -1495,7 +1493,8 @@ class AppPCVController(QObject):
                 for j in range(width):
                     gray_image[i, j] = self.grayscaleValue(image[i, j])
 
-            result = self.opening(gray_image, kernel)  # Menggunakan fungsi morfologiOpening
+            # Menggunakan fungsi morfologiOpening
+            result = self.opening(gray_image, kernel)
             result = self.binary_threshold(result)
 
             q_image = QImage(
@@ -1507,7 +1506,7 @@ class AppPCVController(QObject):
         dilated_image = self.dilasi(image, kernel)
         closed_image = self.erosi(dilated_image, kernel)
         return closed_image
-    
+
     def morfologiClosing(self):
         image_path = self.model.imgPath
         if image_path:
@@ -1520,7 +1519,8 @@ class AppPCVController(QObject):
                 for j in range(width):
                     gray_image[i, j] = self.grayscaleValue(image[i, j])
 
-            result = self.closing(gray_image, kernel)  # Menggunakan fungsi morfologiOpening
+            # Menggunakan fungsi morfologiOpening
+            result = self.closing(gray_image, kernel)
             result = self.binary_threshold(result)
 
             q_image = QImage(
@@ -1544,26 +1544,30 @@ class AppPCVController(QObject):
             self.lower_hue = 90
             self.lower_saturation = 0
             self.lower_value = 90
-            lower = np.array([self.lower_hue, self.lower_saturation, self.lower_value])
-            upper = np.array([self.upper_hue, self.upper_saturation, self.upper_value])
+            lower = np.array(
+                [self.lower_hue, self.lower_saturation, self.lower_value])
+            upper = np.array(
+                [self.upper_hue, self.upper_saturation, self.upper_value])
 
             mask = cv2.inRange(hsv_image, lower, upper)
 
-            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours, _ = cv2.findContours(
+                mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
             image_with_contours = image.copy()
             for contour in contours:
-                x, y, w, h = cv2.boundingRect(contour)  
-                cv2.rectangle(image_with_contours, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                x, y, w, h = cv2.boundingRect(contour)
+                cv2.rectangle(image_with_contours, (x, y),
+                              (x + w, y + h), (255, 0, 0), 2)
 
             height, width, channel = image_with_contours.shape
             bytes_per_line = 3 * width
-            q_image = QImage(image_with_contours.data, width, height, bytes_per_line, QImage.Format_RGB888)
+            q_image = QImage(image_with_contours.data, width,
+                             height, bytes_per_line, QImage.Format_RGB888)
 
             pixmap = QPixmap.fromImage(q_image)
 
             self.model.image_result_changed.emit(pixmap)
-
 
     def rgbToHsv(self):
         image_path = self.model.imgPath
@@ -1572,13 +1576,15 @@ class AppPCVController(QObject):
             image = image / 255.0
 
             # Convert RGB to HSV
-            image_hsv = np.array([colorsys.rgb_to_hsv(pixel[0], pixel[1], pixel[2]) for pixel in image.reshape(-1, 3)])
+            image_hsv = np.array([colorsys.rgb_to_hsv(
+                pixel[0], pixel[1], pixel[2]) for pixel in image.reshape(-1, 3)])
 
             # Reshape the resulting array back to the original image shape
             image_hsv = image_hsv.reshape(image.shape)
 
             # Convert HSV to RGB
-            image_rgb = np.array([colorsys.hsv_to_rgb(pixel[0], pixel[1], pixel[2]) for pixel in image_hsv.reshape(-1, 3)])
+            image_rgb = np.array([colorsys.hsv_to_rgb(
+                pixel[0], pixel[1], pixel[2]) for pixel in image_hsv.reshape(-1, 3)])
 
             # Reshape the resulting array back to the original image shape
             image_rgb = image_rgb.reshape(image.shape)
@@ -1605,6 +1611,87 @@ class AppPCVController(QObject):
 
             h, w, _ = image_rgb.shape
             bytes_per_line = 3 * w
-            q_image = QImage(image_ycrcb.data, w, h, bytes_per_line, QImage.Format_RGB888)
+            q_image = QImage(image_ycrcb.data, w, h,
+                             bytes_per_line, QImage.Format_RGB888)
             pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
+
+    def removeBg(self):
+        image_path = self.model.imgPath
+        if image_path:
+            input = cv2.imread(image_path)
+            output = remove(input)
+            pixmap = QPixmap.fromImage(output)
+            self.model.image_result_changed.emit(pixmap)
+
+    def SegmentasiCitra(self):
+        image_path = self.model.imgPath
+        if image_path:
+            input_image = mpimg.imread(image_path)
+
+            # Mendapatkan lebar dan tinggi cipixmaptra
+            width = input_image.width()
+            height = input_image.height()
+
+            # Buat citra segmen yang memiliki ukuran yang sama dengan citra asli
+            segmented_image = QImage(width, height, QImage.Format_ARGB32)
+
+            # Tentukan batas warna (lower_color dan upper_color) untuk segmentasi
+            lower_color = QColor(100, 0, 0)
+            upper_color = QColor(255, 100, 100)
+
+            # Looping melalui setiap pixel dalam citra
+            for y in range(height):
+                for x in range(width):
+                    pixel_color = input_image.pixelColor(x, y)
+                    r, g, b = pixel_color.red(), pixel_color.green(), pixel_color.blue()
+
+                    # Cek apakah nilai warna pixel berada dalam rentang yang ditentukan
+                    if (lower_color.red() <= r <= upper_color.red() and
+                        lower_color.green() <= g <= upper_color.green() and
+                            lower_color.blue() <= b <= upper_color.blue()):
+                        # Jika dalam rentang, set pixel menjadi merah (255, 0, 0)
+                        segmented_image.setPixel(x, y, qRgb(255, 0, 0))
+                    else:
+                        # Jika tidak dalam rentang, set pixel menjadi hitam (0, 0, 0)
+                        segmented_image.setPixel(x, y, qRgb(0, 0, 0))
+
+            # Output citra segmen
+            segmented_pixmap = QPixmap.fromImage(segmented_image)
+            self.model.image_result_changed.emit(segmented_pixmap)
+
+    def SegmentasiCitra(self):
+        image_path = self.model.imgPath
+        if image_path:
+            input_image = QImage(image_path)
+
+            # Mendapatkan lebar dan tinggi citra
+            width = input_image.width()
+            height = input_image.height()
+
+            # Buat citra segmen yang memiliki ukuran yang sama dengan citra asli
+            segmented_image = QImage(width, height, QImage.Format_ARGB32)
+
+            # Tentukan batas warna (lower_color dan upper_color) untuk segmentasi
+            lower_color = QColor(100, 0, 0)
+            upper_color = QColor(255, 100, 100)
+
+            # Looping melalui setiap pixel dalam citra
+            for y in range(height):
+                for x in range(width):
+                    pixel_color = QColor(input_image.pixel(x, y))
+                    r, g, b = pixel_color.red(), pixel_color.green(), pixel_color.blue()
+
+                    # Cek apakah nilai warna pixel berada dalam rentang yang ditentukan
+                    if (lower_color.red() <= r <= upper_color.red() and
+                        lower_color.green() <= g <= upper_color.green() and
+                        lower_color.blue() <= b <= upper_color.blue()):
+                        # Jika dalam rentang, set pixel menjadi merah (255, 0, 0)
+                        segmented_image.setPixelColor(x, y, QColor(255, 0, 0))
+                    else:
+                        # Jika tidak dalam rentang, set pixel menjadi hitam (0, 0, 0)
+                        segmented_image.setPixelColor(x, y, QColor(0, 0, 0))
+
+            # Output citra segmen
+            segmented_pixmap = QPixmap.fromImage(segmented_image)
+            self.model.image_result_changed.emit(segmented_pixmap)

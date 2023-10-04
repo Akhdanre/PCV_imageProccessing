@@ -154,6 +154,10 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionRotasi.triggered.connect(self.sliderwindowrotasi)
         self.view.actionCrop.triggered.connect(self.controller.Crop)
 
+        self.view.actionRgbHsv.triggered.connect(self.controller.rgbToHsv)
+        self.view.actionRgbYrcbc.triggered.connect(self.controller.rgbToYCrCb)
+
+        self.view.actionSegmentasi.triggered.connect(self.controller.SegmentasiCitra)
         # self.view.actionAritmatika.triggered.connect(self.show_middle_label)
         self.view.actionSplit.triggered.connect(self.show_middle_label)
         self.view.actionArtBack.triggered.connect(self.hideMiddleLable)
