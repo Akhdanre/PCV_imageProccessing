@@ -1344,12 +1344,11 @@ class AppPCVController(QObject):
         threshold_value = 128
         thresholded_image = np.zeros_like(image)
 
-        # Lakukan thresholding piksel per piksel
         thresholded_image[image <= threshold_value] = 255
 
         return thresholded_image
 
-    def dilate(self, image, kernel):
+    def dilasi(self, image, kernel):
         height, width = image.shape
         result = np.zeros((height, width), dtype=np.uint8)
         k_height, k_width = kernel.shape
@@ -1361,7 +1360,6 @@ class AppPCVController(QObject):
         padded_image = np.pad(
             image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
 
-        # Dilasi
         for i in range(pad_height, height + pad_height):
             for j in range(pad_width, width + pad_width):
                 result[i - pad_height, j - pad_width] = np.max(
@@ -1397,12 +1395,12 @@ class AppPCVController(QObject):
                 for j in range(width):
                     gray_image[i, j] = self.grayscaleValue(image[i, j])
 
-            result = self.dilate(gray_image, kernel)
+            result = self.dilasi(gray_image, kernel)
             result = self.binary_threshold(result)
 
             q_image = QImage(
                 result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
-            # Menampilkan hasil
+
             pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
 
@@ -1417,7 +1415,6 @@ class AppPCVController(QObject):
         padded_image = np.pad(
             image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant')
 
-        # Erosi
         for i in range(pad_height, height + pad_height):
             for j in range(pad_width, width + pad_width):
                 result[i - pad_height, j - pad_width] = np.min(
@@ -1461,3 +1458,53 @@ class AppPCVController(QObject):
             pixmap = QPixmap.fromImage(q_image)
             self.model.image_result_changed.emit(pixmap)
 
+
+    def opening(self, image, kernel):
+        eroded_image = self.erosi(image, kernel)
+        opened_image = self.dilasi(eroded_image, kernel)
+        return opened_image
+
+    def morfologiOpening(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            kernel = np.ones((9, 9), dtype=np.uint8)
+
+            gray_image = np.zeros((height, width), dtype=np.uint8)
+            for i in range(height):
+                for j in range(width):
+                    gray_image[i, j] = self.grayscaleValue(image[i, j])
+
+            result = self.opening(gray_image, kernel)  # Menggunakan fungsi morfologiOpening
+            result = self.binary_threshold(result)
+
+            q_image = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
+            pixmap = QPixmap.fromImage(q_image)
+            self.model.image_result_changed.emit(pixmap)
+
+    def closing(self, image, kernel):
+        dilated_image = self.dilasi(image, kernel)
+        closed_image = self.erosi(dilated_image, kernel)
+        return closed_image
+    
+    def morfologiClosing(self):
+        image_path = self.model.imgPath
+        if image_path:
+            image = mpimg.imread(image_path)
+            height, width, channels = image.shape
+            kernel = np.ones((9, 9), dtype=np.uint8)
+
+            gray_image = np.zeros((height, width), dtype=np.uint8)
+            for i in range(height):
+                for j in range(width):
+                    gray_image[i, j] = self.grayscaleValue(image[i, j])
+
+            result = self.closing(gray_image, kernel)  # Menggunakan fungsi morfologiOpening
+            result = self.binary_threshold(result)
+
+            q_image = QImage(
+                result.data, result.shape[1], result.shape[0], result.strides[0], QImage.Format_Grayscale8)
+            pixmap = QPixmap.fromImage(q_image)
+            self.model.image_result_changed.emit(pixmap)

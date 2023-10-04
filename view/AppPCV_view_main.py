@@ -128,6 +128,9 @@ class AppPCVViewMain(QMainWindow):
         self.view.actionErosionSquare_3.triggered.connect(lambda: self.controller.morfologiErosi("square3"))
         self.view.actionErosionSquare_5.triggered.connect(lambda: self.controller.morfologiErosi("square5"))
 
+        self.view.actionSquare_9.triggered.connect(self.controller.morfologiOpening)
+        self.view.actionSquare_10.triggered.connect(self.controller.morfologiClosing)
+
         self.view.actionFuzzy_Grayscale.triggered.connect(
             self.controller.fuzzyHistogram)
         self.view.actionFuzzy_HE_RGB.triggered.connect(
